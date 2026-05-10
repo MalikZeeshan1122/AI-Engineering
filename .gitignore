@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Dist / build
+dist/
+build/
+*.egg-info/
+
+# Local secrets & large artifacts (keep samples small in git)
+*.pem
+secrets/
+RESOURCES/**/*.pdf
+!RESOURCES/README.md
