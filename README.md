@@ -2,9 +2,13 @@
 
 Personal learning lab and portfolio for AI engineering — Python backends, LLMs, RAG, agents, and production deployments.
 
+## Linear path A → Z
+
+Open **[`START_HERE.md`](START_HERE.md)** for the ordered sequence (which folder comes first, second, … through portfolio). **[`ROADMAP.md`](ROADMAP.md)** stays the phased timeline.
+
 ## How to use this repo
 
-1. Follow **[`ROADMAP.md`](ROADMAP.md)** (phases and timeline).
+1. Follow **[`START_HERE.md`](START_HERE.md)** (order) plus **[`ROADMAP.md`](ROADMAP.md)** (timing and builds).
 2. **Learn** in docs/videos → **implement** in the matching folder → **deploy** when ready → **log** progress in **`DAILY_LOG/`**.
 3. Keep **`PORTFOLIO_PROJECTS/`** for polished, recruiter-ready work only; experiments live in **`EXPERIMENTS/`** or topic folders.
 
