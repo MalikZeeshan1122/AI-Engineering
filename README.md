@@ -6,11 +6,15 @@ Personal learning lab and portfolio for AI engineering — Python backends, LLMs
 
 Open **[`START_HERE.md`](START_HERE.md)** for the ordered sequence (which folder comes first, second, … through portfolio). **[`ROADMAP.md`](ROADMAP.md)** stays the phased timeline.
 
+### Folder naming
+
+Top-level folders use **`NN-kebab-topic`**: **`01`**–**`21`** follow the curriculum spine (habits → foundations → portfolio). **`90`**–**`92`** are supporting (resources, OSS log, experiments) so alphabetical sort matches journey order.
+
 ## How to use this repo
 
 1. Follow **[`START_HERE.md`](START_HERE.md)** (order) plus **[`ROADMAP.md`](ROADMAP.md)** (timing and builds).
-2. **Learn** in docs/videos → **implement** in the matching folder → **deploy** when ready → **log** progress in **`DAILY_LOG/`**.
-3. Keep **`PORTFOLIO_PROJECTS/`** for polished, recruiter-ready work only; experiments live in **`EXPERIMENTS/`** or topic folders.
+2. **Learn** in docs/videos → **implement** in the matching folder → **deploy** when ready → **log** progress in **`01-daily-log/`**.
+3. Keep **`21-portfolio-projects/`** for polished, recruiter-ready work only; experiments live in **`92-experiments/`** or topic folders.
 
 ## Suggested daily loop
 
@@ -18,36 +22,36 @@ Open **[`START_HERE.md`](START_HERE.md)** for the ordered sequence (which folder
 |-------------|---------------------------------------------|
 | ~1 hr       | Read docs / watch targeted material         |
 | ~2 hrs      | Build something small in the right folder    |
-| ~30 min     | Notes in `NOTES/`, log in `DAILY_LOG/`, tweak README |
+| ~30 min     | Notes in `02-notes/`, log in `01-daily-log/`, tweak README |
 
-## Folder map
+## Folder map (curriculum sort)
 
 | Folder | Purpose |
 |--------|---------|
-| [`NOTES/`](NOTES/) | Concepts, diagrams, mistakes, cheatsheets |
-| [`DAILY_LOG/`](DAILY_LOG/) | What you did today and what's next |
-| [`PYTHON_FOUNDATIONS/`](PYTHON_FOUNDATIONS/) | Core Python patterns |
-| [`API_ENGINEERING/`](API_ENGINEERING/) | REST, auth, webhooks, FastAPI patterns |
-| [`LLM_FUNDAMENTALS/`](LLM_FUNDAMENTALS/) | APIs, tokens, embeddings, tool calling |
-| [`PROMPT_ENGINEERING/`](PROMPT_ENGINEERING/) | Reusable prompts by task |
-| [`RAG_SYSTEMS/`](RAG_SYSTEMS/) | Chunking, retrieval, ingestion pipelines |
-| [`VECTOR_DATABASES/`](VECTOR_DATABASES/) | Chroma, Pinecone, FAISS, etc. |
-| [`AI_AGENTS/`](AI_AGENTS/) | Agent loops and tooling (framework-agnostic) |
-| [`LANGCHAIN/`](LANGCHAIN/) | LangChain experiments |
-| [`LANGGRAPH/`](LANGGRAPH/) | Stateful graphs, human-in-the-loop |
-| [`CREWAI/`](CREWAI/) | Multi-agent crews |
-| [`MULTI_AGENT_SYSTEMS/`](MULTI_AGENT_SYSTEMS/) | Orchestration patterns |
-| [`FASTAPI_PROJECTS/`](FASTAPI_PROJECTS/) | Production-ready API shells |
-| [`MCP_SERVERS/`](MCP_SERVERS/) | Model Context Protocol servers/tools |
-| [`AUTOMATIONS/`](AUTOMATIONS/) | Email, CRM, parsing, scripts |
-| [`AI_APPLICATIONS/`](AI_APPLICATIONS/) | End-to-end mini products |
-| [`DEPLOYMENT/`](DEPLOYMENT/) | Docker, hosting, CI/CD notes and configs |
-| [`SYSTEM_DESIGN/`](SYSTEM_DESIGN/) | RAG/agent architecture sketches |
-| [`OPEN_SOURCE/`](OPEN_SOURCE/) | Contributions log |
-| [`INTERVIEW_PREP/`](INTERVIEW_PREP/) | Practice and talking points |
-| [`EXPERIMENTS/`](EXPERIMENTS/) | Messy ideas — intentional |
-| [`PORTFOLIO_PROJECTS/`](PORTFOLIO_PROJECTS/) | Finished, polished projects |
-| [`RESOURCES/`](RESOURCES/) | Links and external references |
+| [`01-daily-log/`](01-daily-log/) | What you did today and what's next |
+| [`02-notes/`](02-notes/) | Concepts, diagrams, mistakes, cheatsheets |
+| [`03-python-foundations/`](03-python-foundations/) | Core Python patterns |
+| [`04-api-engineering/`](04-api-engineering/) | REST, auth, webhooks |
+| [`05-fastapi-projects/`](05-fastapi-projects/) | Production-ready FastAPI shells |
+| [`06-llm-fundamentals/`](06-llm-fundamentals/) | APIs, tokens, embeddings, tool calling |
+| [`07-prompt-engineering/`](07-prompt-engineering/) | Reusable prompts by task |
+| [`08-ai-applications/`](08-ai-applications/) | End-to-end mini products |
+| [`09-automations/`](09-automations/) | Email, CRM, parsing, scripts |
+| [`10-vector-databases/`](10-vector-databases/) | Chroma, Pinecone, FAISS, etc. |
+| [`11-rag-systems/`](11-rag-systems/) | Chunking, retrieval, ingestion pipelines |
+| [`12-system-design/`](12-system-design/) | RAG/agent architecture sketches |
+| [`13-interview-prep/`](13-interview-prep/) | Practice and talking points |
+| [`14-ai-agents/`](14-ai-agents/) | Agent loops and tooling (framework-agnostic) |
+| [`15-langchain/`](15-langchain/) | LangChain experiments |
+| [`16-langgraph/`](16-langgraph/) | Stateful graphs, human-in-the-loop |
+| [`17-crewai/`](17-crewai/) | Multi-agent crews |
+| [`18-multi-agent-systems/`](18-multi-agent-systems/) | Orchestration patterns |
+| [`19-mcp-servers/`](19-mcp-servers/) | Model Context Protocol servers/tools |
+| [`20-deployment/`](20-deployment/) | Docker, hosting, CI/CD notes and configs |
+| [`21-portfolio-projects/`](21-portfolio-projects/) | Finished, polished projects |
+| [`90-resources/`](90-resources/) | Links and external references |
+| [`91-open-source/`](91-open-source/) | Contributions log |
+| [`92-experiments/`](92-experiments/) | Messy ideas — intentional |
 
 ## Skills stack (target)
 

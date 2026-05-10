@@ -1,12 +1,12 @@
 # Start here — A → Z learning order
 
-Follow this **linear path**. Your folders stay organized by topic; **this file** defines the sequence. Keep **[`ROADMAP.md`](ROADMAP.md)** open for timelines and build ideas.
+Follow this **linear path**. Folders sort by **`NN-name`** ([`README.md`](README.md) explains numbering). **[`ROADMAP.md`](ROADMAP.md)** has timelines and build ideas.
 
 ## Before day one (15 minutes)
 
 1. Read **[`README.md`](README.md)** — how the repo works.
 2. Skim **[`ROADMAP.md`](ROADMAP.md)** — five phases at a glance.
-3. Seed **[`RESOURCES/`](RESOURCES/)** — add links/bookmarks as you discover them (ongoing).
+3. Seed **[`90-resources/`](90-resources/)** — add links/bookmarks as you discover them (ongoing).
 
 ## Habits — run in parallel forever
 
@@ -14,8 +14,8 @@ These are **not** phases; they accompany every phase.
 
 | Order | Folder | What you do |
 |-------|--------|--------------|
-| A | [`DAILY_LOG/`](DAILY_LOG/) | Copy `TEMPLATE.md` → `YYYY-MM-DD.md` **every study day.** |
-| B | [`NOTES/`](NOTES/) | 5–15 minutes after building: concepts, bugs, diagrams. |
+| A | [`01-daily-log/`](01-daily-log/) | Copy `TEMPLATE.md` → `YYYY-MM-DD.md` **every study day.** |
+| B | [`02-notes/`](02-notes/) | 5–15 minutes after building: concepts, bugs, diagrams. |
 
 ---
 
@@ -25,11 +25,11 @@ Learn core Python, then expose behavior over HTTP.
 
 | Step | Folder | Aim |
 |------|--------|-----|
-| 1 | [`PYTHON_FOUNDATIONS/`](PYTHON_FOUNDATIONS/) | Functions, classes, async, typing, exercises in subfolders. |
-| 2 | [`API_ENGINEERING/`](API_ENGINEERING/) | REST concepts, JSON, status codes, simple auth patterns, webhooks. |
-| 3 | [`FASTAPI_PROJECTS/`](FASTAPI_PROJECTS/) | One **minimal** FastAPI service (routes, validation, `.env`). |
+| 1 | [`03-python-foundations/`](03-python-foundations/) | Functions, classes, async, typing, exercises in subfolders. |
+| 2 | [`04-api-engineering/`](04-api-engineering/) | REST concepts, JSON, status codes, simple auth patterns, webhooks. |
+| 3 | [`05-fastapi-projects/`](05-fastapi-projects/) | One **minimal** FastAPI service (routes, validation, `.env`). |
 
-Optional practice: [`AUTOMATIONS/`](AUTOMATIONS/) simple CLI/CSV/script once Python feels comfortable.
+Optional practice: [`09-automations/`](09-automations/) — simple CLI/CSV/script once Python feels comfortable.
 
 ---
 
@@ -37,11 +37,11 @@ Optional practice: [`AUTOMATIONS/`](AUTOMATIONS/) simple CLI/CSV/script once Pyt
 
 | Step | Folder | Aim |
 |------|--------|-----|
-| 4 | [`LLM_FUNDAMENTALS/`](LLM_FUNDAMENTALS/) | Official SDKs, streaming, tokens, embeddings, tool/function calling. |
-| 5 | [`PROMPT_ENGINEERING/`](PROMPT_ENGINEERING/) | Save prompts you reuse — summarize, extract, classify. |
-| 6 | [`AI_APPLICATIONS/`](AI_APPLICATIONS/) | One small app end-to-end (chat + memory, or assistant). |
+| 4 | [`06-llm-fundamentals/`](06-llm-fundamentals/) | Official SDKs, streaming, tokens, embeddings, tool/function calling. |
+| 5 | [`07-prompt-engineering/`](07-prompt-engineering/) | Save prompts you reuse — summarize, extract, classify. |
+| 6 | [`08-ai-applications/`](08-ai-applications/) | One small app end-to-end (chat + memory, or assistant). |
 
-Sandwich messy spikes in [`EXPERIMENTS/`](EXPERIMENTS/) — promote stable code upward when it works.
+Sandwich messy spikes in [`92-experiments/`](92-experiments/) — promote stable code upward when it works.
 
 ---
 
@@ -49,11 +49,11 @@ Sandwich messy spikes in [`EXPERIMENTS/`](EXPERIMENTS/) — promote stable code 
 
 | Step | Folder | Aim |
 |------|--------|-----|
-| 7 | [`VECTOR_DATABASES/`](VECTOR_DATABASES/) | One local store deeply (Chroma/FAISS), then skim a hosted option if you want. |
-| 8 | [`RAG_SYSTEMS/`](RAG_SYSTEMS/) | Chunk → embed → retrieve → inject → cite. |
-| 9 | [`SYSTEM_DESIGN/`](SYSTEM_DESIGN/) | Short doc: your RAG architecture, trade-offs, failure modes. |
+| 7 | [`10-vector-databases/`](10-vector-databases/) | One local store deeply (Chroma/FAISS), then skim a hosted option if you want. |
+| 8 | [`11-rag-systems/`](11-rag-systems/) | Chunk → embed → retrieve → inject → cite. |
+| 9 | [`12-system-design/`](12-system-design/) | Short doc: your RAG architecture, trade-offs, failure modes. |
 
-Begin light [`INTERVIEW_PREP/`](INTERVIEW_PREP/) here (“explain this RAG system in 5 minutes”) and keep adding through later phases.
+Begin light [`13-interview-prep/`](13-interview-prep/) here (“explain this RAG system in 5 minutes”) and keep adding through later phases.
 
 ---
 
@@ -61,14 +61,14 @@ Begin light [`INTERVIEW_PREP/`](INTERVIEW_PREP/) here (“explain this RAG syste
 
 | Step | Folder | Aim |
 |------|--------|-----|
-| 10 | [`AI_AGENTS/`](AI_AGENTS/) | Tool loops, guardrails, simple state — **minimal framework** okay. |
-| 11 | [`LANGCHAIN/`](LANGCHAIN/) | Chains, memory, tools/agents basics. |
-| 12 | [`LANGGRAPH/`](LANGGRAPH/) | Stateful graphs, multi-step flows, optional human-in-the-loop. |
-| 13 | [`CREWAI/`](CREWAI/) OR [`MULTI_AGENT_SYSTEMS/`](MULTI_AGENT_SYSTEMS/) | Pick one crew/pattern depth-first; sketch others in NOTES. |
+| 10 | [`14-ai-agents/`](14-ai-agents/) | Tool loops, guardrails, simple state — **minimal framework** okay. |
+| 11 | [`15-langchain/`](15-langchain/) | Chains, memory, tools/agents basics. |
+| 12 | [`16-langgraph/`](16-langgraph/) | Stateful graphs, multi-step flows, optional human-in-the-loop. |
+| 13 | [`17-crewai/`](17-crewai/) OR [`18-multi-agent-systems/`](18-multi-agent-systems/) | Pick one crew/pattern depth-first; sketch others in `02-notes/`. |
 
 | Step | Folder | Aim |
 |------|--------|-----|
-| 14 | [`MCP_SERVERS/`](MCP_SERVERS/) | Build or extend one MCP server once HTTP + tools already feel familiar. |
+| 14 | [`19-mcp-servers/`](19-mcp-servers/) | Build or extend one MCP server once HTTP + tools already feel familiar. |
 
 ---
 
@@ -76,27 +76,27 @@ Begin light [`INTERVIEW_PREP/`](INTERVIEW_PREP/) here (“explain this RAG syste
 
 | Step | Folder | Aim |
 |------|--------|-----|
-| 15 | [`DEPLOYMENT/`](DEPLOYMENT/) | Docker (or Compose), env config, logs, minimal CI idea. |
-| 16 | [`FASTAPI_PROJECTS/`](FASTAPI_PROJECTS/) | **Harden** an API — auth, errors, timeouts, observability stubs. |
-| 17 | [`PORTFOLIO_PROJECTS/`](PORTFOLIO_PROJECTS/) | **Only** polished pieces: README, run steps, demo link/repo link. |
+| 15 | [`20-deployment/`](20-deployment/) | Docker (or Compose), env config, logs, minimal CI idea. |
+| 16 | [`05-fastapi-projects/`](05-fastapi-projects/) | **Harden** an API — auth, errors, timeouts, observability stubs. |
+| 17 | [`21-portfolio-projects/`](21-portfolio-projects/) | **Only** polished pieces: README, run steps, demo link/repo link. |
 
 | Ongoing | Folder | Aim |
 |---------|--------|-----|
-| — | [`AUTOMATIONS/`](AUTOMATIONS/) | Real integrations (email, CRM) anytime after Phase 2. |
-| — | [`OPEN_SOURCE/`](OPEN_SOURCE/) | Log PRs/contributions whenever you contribute. |
+| — | [`09-automations/`](09-automations/) | Real integrations (email, CRM) anytime after Phase 2. |
+| — | [`91-open-source/`](91-open-source/) | Log PRs/contributions whenever you contribute. |
 
 ---
 
 ## One-page cheat sheet — folder vs phase
 
 ```
-PHASE 1  → PYTHON_FOUNDATIONS → API_ENGINEERING → FASTAPI_PROJECTS
-PHASE 2  → LLM_FUNDAMENTALS → PROMPT_ENGINEERING → AI_APPLICATIONS
-PHASE 3  → VECTOR_DATABASES → RAG_SYSTEMS → SYSTEM_DESIGN (+ INTERVIEW_PREP light)
-PHASE 4  → AI_AGENTS → LANGCHAIN → LANGGRAPH → CREWAI / MULTI_AGENT_SYSTEMS → MCP_SERVERS
-PHASE 5  → DEPLOYMENT → FASTAPI_PROJECTS (hardened) → PORTFOLIO_PROJECTS
+PHASE 1 → 03-python-foundations → 04-api-engineering → 05-fastapi-projects
+PHASE 2 → 06-llm-fundamentals → 07-prompt-engineering → 08-ai-applications
+PHASE 3 → 10-vector-databases → 11-rag-systems → 12-system-design (+ 13-interview-prep light)
+PHASE 4 → 14-ai-agents → 15-langchain → 16-langgraph → 17-crewai / 18-multi-agent-systems → 19-mcp-servers
+PHASE 5 → 20-deployment → 05-fastapi-projects (hardened) → 21-portfolio-projects
 
-PARALLEL → DAILY_LOG, NOTES, RESOURCES (always); EXPERIMENTS (anytime); AUTOMATIONS (≥ Phase 2)
+PARALLEL → 01-daily-log, 02-notes, 90-resources (always); 92-experiments (anytime); 09-automations (≥ Phase 2)
 ```
 
-Success looks like **small shipped artifacts** inside the right folders, not empty directories. Move work to **`PORTFOLIO_PROJECTS/`** when it represents you well on a resume/GitHub profile.
+Success looks like **small shipped artifacts** inside the right folders, not empty directories. Promote standout work into **`21-portfolio-projects/`** when it represents you well on a resume/GitHub profile.

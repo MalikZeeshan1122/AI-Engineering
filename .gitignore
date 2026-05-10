@@ -32,5 +32,5 @@ build/
 # Local secrets & large artifacts (keep samples small in git)
 *.pem
 secrets/
-RESOURCES/**/*.pdf
-!RESOURCES/README.md
+90-resources/**/*.pdf
+!90-resources/README.md

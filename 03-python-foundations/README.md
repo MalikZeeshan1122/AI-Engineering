@@ -5,7 +5,7 @@ Exercises and reference code for core Python before heavy LLM work.
 Suggested layout:
 
 ```
-PYTHON_FOUNDATIONS/
+03-python-foundations/
 ├── oop/
 ├── async/
 ├── decorators/
