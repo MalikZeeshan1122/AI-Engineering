@@ -98,6 +98,7 @@ def nb_beginner() -> None:
                 "Recipe blueprint vs one tray of cookies",
                 "`AlarmClock` — ringing behavior",
                 "`CoffeeMaker` — simple actions",
+                "**Progressive drills** — water bottle → laundry → parking meter",
                 "Exercise — contacts list like your phone",
             ],
         )
@@ -196,6 +197,105 @@ print("Enough for espresso?", kitchen.can_brew())'''
 
     cells.append(
         cell_md(
+            """---
+
+## Progressive examples — **easy → harder**
+
+Standalone cells below ramp difficulty: **one number + one verb** → **small collections** → **rules + guards**. Compare each class's **state** (`self....`) before and after methods run."""
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """### A · Easiest — **water bottle** (one dial: milliliters left)
+
+**Daily life:** Each sip drains liquid; you can't magically sip below zero."""
+        )
+    )
+    cells.append(
+        cell_code(
+            '''class WaterBottle:
+    def __init__(self, milliliters: float) -> None:
+        self.ml = milliliters
+
+    def sip(self, amount: float) -> float:
+        """Return how much was actually swallowed."""
+        swallowed = min(amount, self.ml)
+        self.ml -= swallowed
+        return swallowed
+
+
+bottle = WaterBottle(500)
+print("sip", bottle.sip(120), "left", bottle.ml)
+print("sip huge", bottle.sip(9999), "left", bottle.ml)'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """### B · Easy — **laundry basket** (hidden list)
+
+**Daily life:** Toss socks in, grab something to wash—internal pile grows/shrinks without exposing raw chaos."""
+        )
+    )
+    cells.append(
+        cell_code(
+            '''class LaundryBasket:
+    def __init__(self) -> None:
+        self._pile: list[str] = []
+
+    def toss(self, garment: str) -> None:
+        self._pile.append(garment)
+
+    def grab_any(self) -> str | None:
+        return self._pile.pop() if self._pile else None
+
+    def load_size(self) -> int:
+        return len(self._pile)
+
+
+hamper = LaundryBasket()
+hamper.toss("sock")
+hamper.toss("tee")
+print("size", hamper.load_size(), "grabbed", hamper.grab_any(), "remaining", hamper.load_size())'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """### C · Medium — **parking meter** (accumulate then burn time)
+
+**Daily life:** Coins buy minutes; driving away consumes minutes until expired."""
+        )
+    )
+    cells.append(
+        cell_code(
+            '''class ParkingMeter:
+    def __init__(self) -> None:
+        self.minutes_left = 0
+
+    def add_quarters(self, quarters: int) -> None:
+        if quarters < 0:
+            raise ValueError("no negative quarters")
+        self.minutes_left += quarters * 15  # toy rule: 15 min each
+
+    def drive_minutes(self, minutes: int) -> None:
+        self.minutes_left = max(0, self.minutes_left - minutes)
+
+    def is_expired(self) -> bool:
+        return self.minutes_left == 0
+
+
+m = ParkingMeter()
+m.add_quarters(2)
+print("after coins", m.minutes_left)
+m.drive_minutes(40)
+print("after commute", m.minutes_left, "expired?", m.is_expired())'''
+        )
+    )
+
+    cells.append(
+        cell_md(
             """### Exercise — Phone contacts (beginner)
 
 **Daily life:** Your contacts app stores names → numbers and lets you search.
@@ -259,6 +359,7 @@ def nb_intermediate() -> None:
                 "`@property` thermostat bounds",
                 "Inheritance — vehicles",
                 "Composition — backpack",
+                "**Progressive drills** — mailbox → fuel tank → coach roster",
                 "Exercise — gym membership tiers",
             ],
         )
@@ -357,7 +458,7 @@ class Bus(Vehicle):
 
 
 for v in (Bicycle("Trek"), Bus("CityLine")):
-    print(v.brand, "→", v.commute_noise())'''
+    print(v.brand, "->", v.commute_noise())'''
         )
     )
 
@@ -391,6 +492,115 @@ bag = Backpack()
 bag.pack(Pen("blue"))
 bag.pack(Pen("black"))
 print(bag.palette())'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """---
+
+## Progressive examples — **easy → harder**
+
+Same ideas as above—now layer **privacy**, **validated fuel**, **teams built from people**."""
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """### A · Easy — **mailbox** (letters hidden inside)
+
+**Daily life:** Slot accepts envelopes; nosy neighbors only see **how full**, not love-letter contents."""
+        )
+    )
+    cells.append(
+        cell_code(
+            '''class Mailbox:
+    def __init__(self) -> None:
+        self._letters: list[str] = []
+
+    def deposit(self, note: str) -> None:
+        if not note.strip():
+            raise ValueError("empty mail")
+        self._letters.append(note.strip())
+
+    def count(self) -> int:
+        return len(self._letters)
+
+
+box = Mailbox()
+box.deposit("dentist reminder")
+box.deposit("postcard")
+print("waiting letters:", box.count())'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """### B · Medium — **fuel tank** (`@property` + clamp)
+
+**Daily life:** Gauge can't display negative gallons or overflow the tank."""
+        )
+    )
+    cells.append(
+        cell_code(
+            '''class FuelTank:
+    def __init__(self, max_gallons: float, initial: float) -> None:
+        self._cap = max_gallons
+        if not (0 <= initial <= max_gallons):
+            raise ValueError("bad fill level")
+        self._gallons = initial
+
+    @property
+    def gallons(self) -> float:
+        return self._gallons
+
+    @gallons.setter
+    def gallons(self, value: float) -> None:
+        if not (0 <= value <= self._cap):
+            raise ValueError("fuel must fit tank")
+        self._gallons = value
+
+
+tank = FuelTank(max_gallons=15, initial=10)
+tank.gallons = tank.gallons - 3  # explicit read/set avoids augmented-assign quirks on properties
+print("after highway stretch", tank.gallons)
+tank.gallons = 14
+print("filled to", tank.gallons)'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """### C · Harder — **coach roster** (composition over inheritance)
+
+**Daily life:** Coach **has** athletes on a clipboard—coach isn't \"a type of athlete\"; it's a role managing many."""
+        )
+    )
+    cells.append(
+        cell_code(
+            '''class Athlete:
+    def __init__(self, name: str, sport: str) -> None:
+        self.name = name
+        self.sport = sport
+
+
+class Coach:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self._roster: list[Athlete] = []
+
+    def sign(self, athlete: Athlete) -> None:
+        self._roster.append(athlete)
+
+    def roster_summary(self) -> str:
+        parts = [f"{a.name} ({a.sport})" for a in self._roster]
+        return ", ".join(sorted(parts))
+
+
+c = Coach("Rivera")
+c.sign(Athlete("Bo", "soccer"))
+c.sign(Athlete("Ali", "track"))
+print(c.roster_summary())'''
         )
     )
 
@@ -480,6 +690,7 @@ def nb_advanced() -> None:
                 "ABC checkout lanes",
                 "Protocol charging kiosk",
                 "`__repr__` receipts",
+                "**Progressive drills** — delivery states → ticket equality → cart merge → addon registry",
                 "Exercise — smart-home toggle hub",
             ],
         )
@@ -601,6 +812,142 @@ class CartLine:
 
 
 print([CartLine("milk", 2, 3.5), CartLine("bread", 1, 4.25)])'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """---
+
+## Progressive examples — **easy → hardest**
+
+Shippable AI services reuse these tricks: **finite state**, **value identity**, **merging snapshots**, **plugin menus**."""
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """### A · Easy — **delivery order** (tiny state machine)
+
+**Daily life:** Warehouse won't ship before packing—illegal jumps raise loudly (bugs surface early)."""
+        )
+    )
+    cells.append(
+        cell_code(
+            '''class DeliveryOrder:
+    def __init__(self, oid: str) -> None:
+        self.oid = oid
+        self.status = "placed"
+
+    def pack(self) -> None:
+        if self.status != "placed":
+            raise ValueError(f"cannot pack while status={self.status}")
+        self.status = "packed"
+
+    def ship(self) -> None:
+        if self.status != "packed":
+            raise ValueError(f"cannot ship while status={self.status}")
+        self.status = "shipped"
+
+
+order = DeliveryOrder("AI-409")
+order.pack()
+print(order.oid, order.status)
+try:
+    order.pack()
+except ValueError as err:
+    print("blocked:", err)'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """### B · Medium — **seat tickets** (`frozen` dataclass equality)
+
+**Daily life:** Two barcode scans reference the **same seat** even though they're different slips—`frozen` dataclass compares **values**, not memory ids."""
+        )
+    )
+    cells.append(
+        cell_code(
+            '''from dataclasses import dataclass
+
+@dataclass(frozen=True, slots=True)
+class SeatTicket:
+    row: str
+    seat: int
+
+
+scan_a = SeatTicket("M", 7)
+scan_b = SeatTicket("M", 7)
+print("equal?", scan_a == scan_b, "same object?", scan_a is scan_b)'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """### C · Medium-hard — **merging grocery carts** (`__add__`)
+
+**Daily life:** Roommate grabs apples, you grab oat milk—checkout merges quantities **without destroying** original carts."""
+        )
+    )
+    cells.append(
+        cell_code(
+            '''class GroceryCart:
+    def __init__(self) -> None:
+        self.items: dict[str, int] = {}
+
+    def add(self, sku: str, qty: int = 1) -> None:
+        self.items[sku] = self.items.get(sku, 0) + qty
+
+    def __add__(self, other: GroceryCart) -> GroceryCart:
+        merged = GroceryCart()
+        for sku, qty in self.items.items():
+            merged.add(sku, qty)
+        for sku, qty in other.items.items():
+            merged.add(sku, qty)
+        return merged
+
+    def __repr__(self) -> str:
+        return f"GroceryCart({self.items})"
+
+
+mine = GroceryCart()
+mine.add("apple", 3)
+roommate = GroceryCart()
+roommate.add("apple", 1)
+roommate.add("oat milk", 2)
+print(mine + roommate)'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """### D · Hardest — **coffee addon registry** (plugin-style pricing)
+
+**Daily life:** Cafeteria registers syrups/shots once; pricing algorithm sums unknown extras safely."""
+        )
+    )
+    cells.append(
+        cell_code(
+            '''class DrinkMenu:
+    def __init__(self) -> None:
+        self._addons: dict[str, float] = {}
+
+    def register_addon(self, name: str, price_usd: float) -> None:
+        self._addons[name] = price_usd
+
+    def latte_price(self, base_usd: float = 4.5, extras: list[str] | None = None) -> float:
+        extras = extras or []
+        total = base_usd
+        for label in extras:
+            total += self._addons.get(label, 0.0)
+        return round(total, 2)
+
+
+menu = DrinkMenu()
+menu.register_addon("oat milk", 0.8)
+menu.register_addon("extra shot", 1.2)
+print(menu.latte_price(extras=["oat milk", "extra shot"]))'''
         )
     )
 

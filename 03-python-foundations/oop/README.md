@@ -4,9 +4,9 @@ Three Jupyter notebooks from **beginner → advanced**. Each ties core ideas to 
 
 | Order | Notebook | Everyday hook |
 |-------|----------|----------------|
-| 1 | [`01-oop-beginner-blueprints-and-objects.ipynb`](01-oop-beginner-blueprints-and-objects.ipynb) | Recipes vs trays of cookies, alarm clocks, coffee makers |
-| 2 | [`02-oop-intermediate-house-rules.ipynb`](02-oop-intermediate-house-rules.ipynb) | Piggy banks, thermostats, bikes vs buses, backpacks |
-| 3 | [`03-oop-advanced-contracts-and-plugins.ipynb`](03-oop-advanced-contracts-and-plugins.ipynb) | Library cards, checkout lanes, airport chargers, smart-home toggles |
+| 1 | [`01-oop-beginner-blueprints-and-objects.ipynb`](01-oop-beginner-blueprints-and-objects.ipynb) | Recipes vs trays of cookies, alarm clocks, coffee makers **+ easy→medium drills** (bottle, laundry, meter) |
+| 2 | [`02-oop-intermediate-house-rules.ipynb`](02-oop-intermediate-house-rules.ipynb) | Piggy banks, thermostats, bikes vs buses, backpacks **+ mailbox → fuel tank → coach roster** |
+| 3 | [`03-oop-advanced-contracts-and-plugins.ipynb`](03-oop-advanced-contracts-and-plugins.ipynb) | Library cards, checkout lanes, chargers, receipts **+ order states → ticket `__eq__` → cart `__add__` → addon registry** |
 
 ## Regenerate notebooks
 
