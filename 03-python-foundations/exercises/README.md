@@ -18,6 +18,13 @@ Progressive Jupyter notebooks from **beginner → advanced**, tuned for **AI eng
 | 08 | [`08-advanced-typing-protocols-dataclasses.ipynb`](08-advanced-typing-protocols-dataclasses.ipynb) | Dataclasses, `Protocol`, typed helpers |
 | 09 | [`09-async-io.ipynb`](09-async-io.ipynb) | `asyncio`, `gather`, semaphore, `to_thread`, races |
 | 10 | [`10-testing-debugging.ipynb`](10-testing-debugging.ipynb) | Assertions, table-driven checks |
+| 11 | [`11-collections-itertools-functools.ipynb`](11-collections-itertools-functools.ipynb) | `Counter`, `defaultdict`, `itertools`, `lru_cache`, batching patterns |
+| 12 | [`12-logging-for-pipelines.ipynb`](12-logging-for-pipelines.ipynb) | Module loggers, `LoggerAdapter`, propagation, noisy-library tuning |
+| 13 | [`13-regex-text-extraction.ipynb`](13-regex-text-extraction.ipynb) | `re.compile`, citations, fenced JSON extraction |
+| 14 | [`14-bytes-encoding-files.ipynb`](14-bytes-encoding-files.ipynb) | UTF-8 boundaries, decode `errors=`, chunked hashing |
+| 15 | [`15-subprocess-and-archives.ipynb`](15-subprocess-and-archives.ipynb) | Safe `subprocess.run`, timeouts, `zipfile`, zip-slip awareness |
+
+**Extended track (11 → 15)** maps to practical stdlib topics from [`../CURRICULUM-A-Z.md`](../CURRICULUM-A-Z.md): collections/itertools (**I**), logging (**L**), regex (**R**), bytes (**B**), subprocess/archives (**S**, **Z**).
 
 Then open the **single-volume spiral**: [`../python-foundations-beginner-to-advanced.ipynb`](../python-foundations-beginner-to-advanced.ipynb) and cross-check with [`../CURRICULUM-A-Z.md`](../CURRICULUM-A-Z.md).
 

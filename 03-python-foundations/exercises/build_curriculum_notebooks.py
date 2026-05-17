@@ -3,8 +3,8 @@
 Generate progressive Jupyter notebooks for the Python foundations track.
 Run: python build_curriculum_notebooks.py
 
-Format: industry-style learning module (objectives, TOC, demos, exercises, solutions).
-Output: sibling .ipynb files in this directory.
+Format: industry-style learning module (objectives, TOC, demos, progressive drills, exercises, solutions).
+Writes notebooks **01–15** (core 01–10 + stdlib extensions 11–15) as sibling `.ipynb` files in this directory.
 """
 
 from __future__ import annotations
@@ -1338,7 +1338,7 @@ def nb10() -> None:
             "Testing & debugging mindset",
             "Advanced",
             "`09-async-io.ipynb`",
-            "`python-foundations-beginner-to-advanced.ipynb` (full spiral)",
+            "`11-collections-itertools-functools.ipynb` (extended track); then `../python-foundations-beginner-to-advanced.ipynb`",
             [
                 "Write assertions for pure helpers.",
                 "Isolate filesystem tests with tmp paths.",
@@ -1448,6 +1448,752 @@ print("snapshots match")'''
     write_nb("10-testing-debugging.ipynb", cells)
 
 
+def nb11() -> None:
+    cells: list[dict[str, Any]] = []
+    cells.extend(
+        banner(
+            "11",
+            "Collections, itertools & functools",
+            "Intermediate",
+            "`10-testing-debugging.ipynb`",
+            "`12-logging-for-pipelines.ipynb`",
+            [
+                "Choose `Counter`, `defaultdict`, and `deque` for ingestion-shaped code.",
+                "Compose iterators with `itertools` instead of nested loops.",
+                "Memoize pure lookups with `functools.lru_cache` where appropriate.",
+            ],
+            [
+                "`collections` recipes",
+                "`itertools` building blocks",
+                "`functools` helpers",
+                "Progressive drills — grouping → chaining iterators → cached stubs",
+                "Exercise — overlapping windows generator",
+            ],
+        )
+    )
+
+    cells.append(
+        section_header(
+            "1 · `collections` recipes",
+            "*Explanation:* **`defaultdict`** drops boilerplate when bucketing retrieval hits by `doc_id`. **`Counter`** answers “top noisy tokens” questions without manual dict increments.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''from collections import Counter, defaultdict
+
+hits = [
+    {"doc_id": "wiki:42", "score": 0.9},
+    {"doc_id": "ticket:7", "score": 0.4},
+    {"doc_id": "wiki:42", "score": 0.8},
+]
+by_doc: dict[str, list[float]] = defaultdict(list)
+for h in hits:
+    by_doc[h["doc_id"]].append(h["score"])
+
+tokens = "chunk chunk tokens tokens tokens".split()
+print(dict(by_doc))
+print(Counter(tokens).most_common(2))'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "2 · `itertools` building blocks",
+            "*Explanation:* **`chain`** flattens batches; **`islice`** trims infinite iterators — patterns that mirror streaming corpora.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''from itertools import chain, islice
+
+batch_a = ["doc-a1", "doc-a2"]
+batch_b = ["doc-b1"]
+for doc_id in chain(batch_a, batch_b):
+    print("ingest", doc_id)
+
+
+def backoff_seconds():
+    """Yield suggested retry delays without storing the whole schedule."""
+    base = 0.05
+    while True:
+        yield base
+        base = min(base * 2, 2.0)
+
+
+print(list(islice(backoff_seconds(), 5)))'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "3 · `functools` helpers",
+            "*Explanation:* **`lru_cache`** caches immutable-key lookups — useful for stub embedding dictionaries during offline tests.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''from functools import lru_cache
+
+
+@lru_cache(maxsize=256)
+def fake_embed_dimension(text: str) -> int:
+    # Pretend expensive tokenizer lookup
+    return len(text.split()) * 4
+
+
+print(fake_embed_dimension("rag pipeline"))
+print(fake_embed_dimension("rag pipeline"))  # hits cache'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "Bridge **tabular ingestion** utilities with lazy iterators — memory stays flat while sophistication rises."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — bucket lines by prefix\n\nRoute stderr vs stdout-shaped records without nested `if` chains.\n"))
+    cells.append(
+        cell_code(
+            '''from collections import defaultdict
+
+rows = ["OUT: ok", "ERR: timeout", "OUT: shipped"]
+bucket = defaultdict(list)
+for row in rows:
+    kind, _, msg = row.partition(": ")
+    bucket[kind].append(msg)
+
+print(dict(bucket))'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — flatten nested IDs\n\nMirror merging shards before dedupe.\n"))
+    cells.append(
+        cell_code(
+            '''from itertools import chain
+
+nested = [["u1", "u2"], ["u3"], ["u4", "u5"]]
+flat = list(chain.from_iterable(nested))
+print(flat)'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — bounded batches without storing everything\n\nChunk embedding batches from any iterable.\n"))
+    cells.append(
+        cell_code(
+            '''from collections.abc import Iterator
+
+
+def batched_lines(lines: Iterator[str], size: int):
+    batch: list[str] = []
+    for line in lines:
+        batch.append(line)
+        if len(batch) >= size:
+            yield batch
+            batch = []
+    if batch:
+        yield batch
+
+
+demo = batched_lines(iter(["a", "b", "c", "d", "e"]), 2)
+print(list(demo))'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Exercise — overlapping windows\n\nImplement `windowed(text: str, k: int)` as a **generator** yielding each substring of length `k` with stride `1`. Raise `ValueError` if `k < 1` or `k > len(text)`.\n\nExample: `list(windowed(\"abcd\", 2)) == [\"ab\", \"bc\", \"cd\"]`.\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''from collections.abc import Iterator
+
+
+def windowed(text: str, k: int) -> Iterator[str]:
+    raise NotImplementedError
+
+
+assert list(windowed("abcd", 2)) == ["ab", "bc", "cd"]
+assert list(windowed("hi", 2)) == ["hi"]
+print("OK")'''
+        )
+    )
+    cells.append(
+        solution_md(
+            "windowed",
+            'from collections.abc import Iterator\n\ndef windowed(text: str, k: int) -> Iterator[str]:\n    if k < 1 or k > len(text):\n        raise ValueError("bad window")\n    for i in range(len(text) - k + 1):\n        yield text[i : i + k]',
+        )
+    )
+
+    write_nb("11-collections-itertools-functools.ipynb", cells)
+
+
+def nb12() -> None:
+    cells: list[dict[str, Any]] = []
+    cells.extend(
+        banner(
+            "12",
+            "Logging for pipelines & services",
+            "Intermediate",
+            "`11-collections-itertools-functools.ipynb`",
+            "`13-regex-text-extraction.ipynb`",
+            [
+                "Configure module-level loggers instead of sprinkling `print`.",
+                "Attach correlation-style fields without bespoke format strings everywhere.",
+                "Understand propagation — avoid duplicate handlers during experiments.",
+            ],
+            [
+                "Logger hierarchy",
+                "`LoggerAdapter` patterns",
+                "Propagation pitfall",
+                "Progressive drills — basic emit → retry banner → suppress noisy libraries",
+                "Exercise — timing helper logs duration",
+            ],
+        )
+    )
+
+    cells.append(section_header("1 · Logger hierarchy", "*Explanation:* **`logging.getLogger(__name__)`** preserves module paths in logs — grep-friendly once files multiply."))
+    cells.append(
+        cell_code(
+            '''import logging
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s %(message)s")
+log = logging.getLogger(__name__)
+
+log.info("pipeline_start")
+log.warning("high_latency_bucket", extra={"shard": "east", "p95_ms": 842})'''
+        )
+    )
+
+    cells.append(section_header("2 · `LoggerAdapter` for correlation IDs", "*Explanation:* **`LoggerAdapter`** prefixes repeated fields (`rid`, `tenant`) without rewriting every call site — JSON formatters plug in later."))
+    cells.append(
+        cell_code(
+            '''import logging
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+
+
+class RidAdapter(logging.LoggerAdapter):
+    def process(self, msg, kwargs):
+        rid = self.extra.get("rid", "-")
+        return f"[rid={rid}] {msg}", kwargs
+
+
+base = logging.getLogger("ingest.worker")
+adapted = RidAdapter(base, {"rid": "trace-884"})
+adapted.info("embedding_batch_started docs=%s tokens=%s", 128, 40_192)'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "3 · Propagation pitfall",
+            "*Explanation:* Child loggers bubble to parents — duplicate handlers cause duplicate lines; attach handlers at **one** level during notebooks.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import logging
+
+root = logging.getLogger()
+root.handlers.clear()
+logging.basicConfig(level=logging.INFO)
+
+inner = logging.getLogger("outer.shard")
+inner.info("single_line_only")'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "Production debugging rides on **consistent fields** — practice emitting retries, timeouts, and vendor IDs."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — severity routing\n\nReserve WARNING for anomalies operators page on.\n"))
+    cells.append(
+        cell_code(
+            '''import logging
+
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger("demo")
+
+log.debug("tokenizer_cache_hit")
+log.info("request_complete status=200")'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — retry transcript\n\nStructured retries explain flaky vendors faster than prose.\n"))
+    cells.append(
+        cell_code(
+            '''import logging
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+log = logging.getLogger("vendor")
+
+for attempt in range(1, 4):
+    sleep_s = round(0.2 * attempt, 3)
+    log.warning("retry_schedule attempt=%s sleep_s=%s", attempt, sleep_s)'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — silence chatty third-party logs\n\nFlip libraries down to WARNING during demos.\n"))
+    cells.append(
+        cell_code(
+            '''import logging
+
+logging.basicConfig(level=logging.INFO)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+
+root = logging.getLogger()
+root.info("your_signal_remains_visible")'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Exercise — log timed block\n\nImplement `log_duration(log: logging.Logger, label: str)` as a **context manager** (using `contextlib.contextmanager`) that logs `START label` / `END label ms=...` at INFO using `time.perf_counter()`.\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import logging
+from collections.abc import Iterator
+from contextlib import contextmanager
+
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+
+
+@contextmanager
+def log_duration(log: logging.Logger, label: str) -> Iterator[None]:
+    raise NotImplementedError
+
+
+demo_log = logging.getLogger("timing")
+
+with log_duration(demo_log, "fake_embed"):
+    sum(range(1000))
+
+print("done")'''
+        )
+    )
+    cells.append(
+        solution_md(
+            "log_duration",
+            "import logging\nimport time\nfrom collections.abc import Iterator\nfrom contextlib import contextmanager\n\n@contextmanager\ndef log_duration(log: logging.Logger, label: str) -> Iterator[None]:\n    log.info(\"START %s\", label)\n    t0 = time.perf_counter()\n    try:\n        yield\n    finally:\n        ms = (time.perf_counter() - t0) * 1000\n        log.info(\"END %s ms=%.2f\", label, ms)",
+        )
+    )
+
+    write_nb("12-logging-for-pipelines.ipynb", cells)
+
+
+def nb13() -> None:
+    cells: list[dict[str, Any]] = []
+    cells.extend(
+        banner(
+            "13",
+            "Regex & text hygiene",
+            "Intermediate",
+            "`12-logging-for-pipelines.ipynb`",
+            "`14-bytes-encoding-files.ipynb`",
+            [
+                "Compile patterns once when reused.",
+                "Prefer parsers over regex for HTML — but regex shines at fence/tag hygiene.",
+                "Know greedy vs non-greedy boundaries around citations.",
+            ],
+            [
+                "Compiled patterns",
+                "Citation-shaped extraction",
+                "Fence stripping mindset",
+                "Progressive drills — digits → bracket tags → fenced JSON blocks",
+                "Exercise — strip loose citations",
+            ],
+        )
+    )
+
+    cells.append(section_header("1 · Compiled patterns", "*Explanation:* **`re.compile`** amortizes parsing cost across thousands of chunks."))
+    cells.append(
+        cell_code(
+            '''import re
+
+MODEL_REF = re.compile(r"model[=:]\\s*(\\w+)", re.I)
+
+text = "Retry model=gpt-mini then Model: opus"
+print(MODEL_REF.findall(text))'''
+        )
+    )
+
+    cells.append(section_header("2 · Citation-shaped extraction", "*Explanation:* Retrieval QA answers often emit `[source: doc]` snippets — normalize before persistence."))
+    cells.append(
+        cell_code(
+            '''import re
+
+CITE = re.compile(r"\\[source:\\s*([^\\]]+)\\]", re.I)
+
+answer = "Latency dropped [source: runbook section 4] after caching."
+print(CITE.findall(answer))'''
+        )
+    )
+
+    cells.append(section_header("3 · Fence stripping mindset", "*Explanation:* Models wrap JSON inside markdown fences — peel fences before `json.loads`."))
+    cells.append(
+        cell_code(
+            '''import json
+import re
+
+FENCE = re.compile(r"```(?:json)?\\s*(.*?)```", re.S | re.I)
+
+
+def loads_maybe_fenced(blob: str) -> dict:
+    m = FENCE.search(blob)
+    core = m.group(1) if m else blob
+    return json.loads(core.strip())
+
+
+fence_json = "```json"
+body = '{"tool": "search", "query": "logs"}'
+raw = "Here you go:\\n" + fence_json + "\\n" + body + "\\n" + "```" + "\\n"
+print(loads_maybe_fenced(raw))'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "**Messy strings** arrive hourly — drills tighten hygiene without brittle copy/paste parsers."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — grab integers\n\nPull numeric budgets out of prose instructions.\n"))
+    cells.append(
+        cell_code(
+            '''import re
+
+budget = re.findall(r"max_tokens[=:]\\s*(\\d+)", "please cap max_tokens: 2048 please")
+print(budget)'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — normalize whitespace collapse\n\nCollapse accidental double spaces before hashing prompts.\n"))
+    cells.append(
+        cell_code(
+            '''import re
+
+messy = "hello   world\\n\\tagain"
+clean = re.sub(r"\\s+", " ", messy.strip())
+print(clean)'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — capture balanced-ish bullet IDs\n\nMirror extracting `[chunk::uuid]` markers.\n"))
+    cells.append(
+        cell_code(
+            '''import re
+
+tag = re.compile(r"\\[chunk::([a-z0-9\\-]{8,})\\]", re.I)
+text = "See [chunk::ab12cd34-eeee] for detail."
+print(tag.findall(text))'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Exercise — citations only\n\nImplement `strip_citations(answer: str) -> str` removing every `[source: ...]` substring (including brackets), leaving single spaces where multiples collapsed.\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import re
+
+
+def strip_citations(answer: str) -> str:
+    raise NotImplementedError
+
+
+dirty = "OK [source: a] maybe [SOURCE: second]"
+assert strip_citations(dirty).strip() == "OK maybe"
+print("OK")'''
+        )
+    )
+    cells.append(
+        solution_md(
+            "strip_citations",
+            'import re\n\n_CITES = re.compile(r"\\[source:\\s*[^\\]]+\\]", re.I)\n\ndef strip_citations(answer: str) -> str:\n    return re.sub(r"\\s+", " ", _CITES.sub("", answer)).strip()',
+        )
+    )
+
+    write_nb("13-regex-text-extraction.ipynb", cells)
+
+
+def nb14() -> None:
+    cells: list[dict[str, Any]] = []
+    cells.extend(
+        banner(
+            "14",
+            "Bytes, encoding & binary-shaped files",
+            "Intermediate → Advanced",
+            "`13-regex-text-extraction.ipynb`",
+            "`15-subprocess-and-archives.ipynb`",
+            [
+                "Treat encode/decode as explicit boundaries around APIs and disk.",
+                "Decode safely when vendors emit malformed UTF-8.",
+                "Peek binary headers without loading entire artifacts.",
+            ],
+            [
+                "UTF-8 encode/decode",
+                "Error handlers (`errors=`)",
+                "`pathlib` bytes paths",
+                "Progressive drills — literals → sloppy bytes → sniff magic header",
+                "Exercise — stable SHA256 chunks reader",
+            ],
+        )
+    )
+
+    cells.append(section_header("1 · UTF-8 encode/decode", "*Explanation:* HTTP bodies and protobuf-adjacent workflows hop between **`str`** and **`bytes`**."))
+    cells.append(
+        cell_code(
+            '''utf8 = "prompt €".encode()
+print(utf8, utf8.decode())'''
+        )
+    )
+
+    cells.append(section_header("2 · Error handlers (`errors=`)", "*Explanation:* Offline scrapes often contain broken sequences — **`replace`** or **`ignore`** beats crashing ingestion."))
+    cells.append(
+        cell_code(
+            '''broken = b"hello \\xff world"
+print(broken.decode("utf-8", errors="replace"))'''
+        )
+    )
+
+    cells.append(section_header("3 · `pathlib` byte slices", "*Explanation:* Inspect tiny prefixes (magic numbers) before committing parsers."))
+    cells.append(
+        cell_code(
+            '''from pathlib import Path
+
+tmp = Path("sample_blob.bin")
+tmp.write_bytes(b"PK\\x03\\x04fake-zip-prefix")
+
+try:
+    header = tmp.read_bytes()[:4]
+    print(header)
+finally:
+    tmp.unlink(missing_ok=True)'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "**Embedding caches** and **audio chunks** frequently arrive as bytes — boundary discipline prevents mysterious Unicode crashes."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — hex fingerprints\n\nCompare checksum prefixes quickly.\n"))
+    cells.append(
+        cell_code(
+            '''blob = b"abc"
+print(blob.hex())'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — newline normalization bytes-side\n\nSometimes normalize `\\r\\n` before decoding.\n"))
+    cells.append(
+        cell_code(
+            '''raw = b"line\\r\\nline\\r\\n"
+text = raw.replace(b"\\r\\n", b"\\n").decode()
+print(text.splitlines())'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — `memoryview` zero-copy slice\n\nLarge buffers benefit from slicing without copying immediately.\n"))
+    cells.append(
+        cell_code(
+            '''payload = bytearray(b"HEADERPAYLOADTRAILER")
+view = memoryview(payload)
+chunk = view[6:13]
+print(bytes(chunk))'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Exercise — chunked hex digest\n\nImplement `sha256_hex_chunks(path: Path, chunk_size: int = 65536) -> str` returning lowercase hex SHA256 of **file contents** reading in chunks (use `hashlib.sha256`). Works for empty files.\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''from hashlib import sha256
+from pathlib import Path
+
+
+def sha256_hex_chunks(path: Path, chunk_size: int = 65536) -> str:
+    raise NotImplementedError
+
+
+p = Path("_tmp_digest_demo.bin")
+p.write_bytes(b"hello-world")
+try:
+    assert sha256_hex_chunks(p) == sha256(b"hello-world").hexdigest()
+finally:
+    p.unlink(missing_ok=True)
+print("OK")'''
+        )
+    )
+    cells.append(
+        solution_md(
+            "sha256_hex_chunks",
+            "from hashlib import sha256\nfrom pathlib import Path\n\ndef sha256_hex_chunks(path: Path, chunk_size: int = 65536) -> str:\n    h = sha256()\n    with path.open(\"rb\") as fh:\n        while True:\n            chunk = fh.read(chunk_size)\n            if not chunk:\n                break\n            h.update(chunk)\n    return h.hexdigest()",
+        )
+    )
+
+    write_nb("14-bytes-encoding-files.ipynb", cells)
+
+
+def nb15() -> None:
+    cells: list[dict[str, Any]] = []
+    cells.extend(
+        banner(
+            "15",
+            "Subprocess safety & zip archives",
+            "Advanced",
+            "`14-bytes-encoding-files.ipynb`",
+            "`../python-foundations-beginner-to-advanced.ipynb` + `../CURRICULUM-A-Z.md`",
+            [
+                "Invoke CLI tools with argv lists — avoid `shell=True` defaults.",
+                "Capture stdout/stderr with timeouts that match ops expectations.",
+                "Inspect `.zip` artifacts without blindly extracting trees.",
+            ],
+            [
+                "`subprocess.run` patterns",
+                "Timeouts & error surfaces",
+                "`zipfile` introspection",
+                "Progressive drills — argv vs shell → failing commands → largest member listing",
+                "Exercise — bounded `git` revision helper",
+            ],
+        )
+    )
+
+    cells.append(
+        section_header(
+            "1 · `subprocess.run` patterns",
+            "*Explanation:* Wrap **`git`**, **`ffmpeg`**, or codegen CLIs — pass **`list[str]`** argv so shells never interpolate secrets oddly.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import subprocess
+
+completed = subprocess.run(
+    ["python", "-c", "print('hello-from-cli')"],
+    capture_output=True,
+    text=True,
+    check=True,
+)
+print(completed.stdout.strip())'''
+        )
+    )
+
+    cells.append(section_header("2 · Timeouts & error surfaces", "*Explanation:* Hanging CLI calls stall workers — **`timeout=`** converts hangs into actionable exceptions."))
+    cells.append(
+        cell_code(
+            '''import subprocess
+
+try:
+    subprocess.run(["python", "-c", "import time; time.sleep(10)"], timeout=0.05)
+except subprocess.TimeoutExpired as exc:
+    print("stopped:", type(exc).__name__)'''
+        )
+    )
+
+    cells.append(section_header("3 · `zipfile` introspection", "*Explanation:* Dataset bundles arrive zipped — **`ZipFile.infolist`** exposes sizes before extraction."))
+    cells.append(
+        cell_code(
+            '''from pathlib import Path
+import zipfile
+
+bundle = Path("_demo_bundle.zip")
+with zipfile.ZipFile(bundle, "w") as zf:
+    zf.writestr("small.txt", "x")
+    zf.writestr("folder/big.bin", "y" * 200)
+
+try:
+    with zipfile.ZipFile(bundle) as zf:
+        infos = sorted(zf.infolist(), key=lambda i: i.file_size, reverse=True)
+        print([(i.filename, i.file_size) for i in infos[:2]])
+finally:
+    bundle.unlink(missing_ok=True)'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "**Glue code** orchestrates binaries — drills reinforce safety habits before wiring agents to local tools."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — argv list quoting\n\nPython receives arguments cleanly — no manual escaping.\n"))
+    cells.append(
+        cell_code(
+            '''import subprocess
+
+out = subprocess.run(
+    ["python", "-c", "import sys; print(sys.argv[1])", "multi word argument"],
+    capture_output=True,
+    text=True,
+    check=True,
+)
+print(out.stdout.strip())'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — tolerate nonzero exits\n\nSometimes stderr carries signal — inspect **`returncode`** instead of crashing silently.\n"))
+    cells.append(
+        cell_code(
+            '''import subprocess
+
+completed = subprocess.run(["python", "-c", "raise SystemExit(2)"], capture_output=True)
+print("code", completed.returncode)'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — zip-slip mindset\n\nNormalize-member paths mentally — refuse `..` escapes before extracting.\n"))
+    cells.append(
+        cell_code(
+            '''from pathlib import PurePosixPath
+
+
+def safe_member(name: str) -> bool:
+    dest = PurePosixPath(name)
+    return dest.parts and not dest.is_absolute() and ".." not in dest.parts
+
+
+print(safe_member("../evil.txt"), safe_member("data/file.txt"))'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Exercise — `git_head`\n\nImplement `git_head(repo: Path | None = None, timeout: float = 2.0) -> str` running `git rev-parse HEAD` via **`subprocess.run`**. If `repo` is given, pass **`cwd=str(repo)`**. On failure (**nonzero exit** or **`TimeoutExpired`**), return `\"unknown\"`. Trim whitespace from stdout.\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''from pathlib import Path
+import subprocess
+
+
+def git_head(repo: Path | None = None, timeout: float = 2.0) -> str:
+    raise NotImplementedError
+
+
+print(git_head())'''
+        )
+    )
+    cells.append(
+        solution_md(
+            "git_head",
+            'from pathlib import Path\nimport subprocess\n\ndef git_head(repo: Path | None = None, timeout: float = 2.0) -> str:\n    cmd = ["git", "rev-parse", "HEAD"]\n    kw = {"cwd": str(repo)} if repo else {}\n    try:\n        proc = subprocess.run(\n            cmd,\n            capture_output=True,\n            text=True,\n            timeout=timeout,\n            check=False,\n            **kw,\n        )\n    except subprocess.TimeoutExpired:\n        return "unknown"\n    if proc.returncode != 0:\n        return "unknown"\n    return proc.stdout.strip()',
+        )
+    )
+
+    write_nb("15-subprocess-and-archives.ipynb", cells)
+
+
 def main() -> None:
     nb01()
     nb02()
@@ -1459,7 +2205,12 @@ def main() -> None:
     nb08()
     nb09()
     nb10()
-    print("Done. Generated 10 notebooks in", OUT_DIR)
+    nb11()
+    nb12()
+    nb13()
+    nb14()
+    nb15()
+    print("Done. Generated 15 notebooks in", OUT_DIR)
 
 
 if __name__ == "__main__":
