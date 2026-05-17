@@ -2,6 +2,10 @@
 
 Follow this **linear path**. Folders sort by **`NN-name`** ([`README.md`](README.md) explains numbering). **[`ROADMAP.md`](ROADMAP.md)** has timelines and build ideas.
 
+## Maintainer
+
+**Muhammad Zeeshan** — Founder, **[ZorceX](https://zorcex.com/)** · **[LinkedIn](https://www.linkedin.com/in/muhammadzeeshan007/)**
+
 ## Before day one (15 minutes)
 
 1. Read **[`README.md`](README.md)** — how the repo works.
