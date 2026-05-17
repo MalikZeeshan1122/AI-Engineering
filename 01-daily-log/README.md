@@ -22,6 +22,7 @@ This folder pairs with the habit described in **[`03-python-foundations/CURRICUL
 | **[`03-python-foundations/README.md`](../03-python-foundations/README.md)** | **Tour** of exercises, LeetCode drills, OOP track, runnable script folders. |
 | **[`03-python-foundations/exercises/README.md`](../03-python-foundations/exercises/README.md)** | Guided **01→22** Jupyter path — ideal notebook numbers to cite in your log. |
 | **[`03-python-foundations/leetcode_practice/README.md`](../03-python-foundations/leetcode_practice/README.md)** | **`unittest`** pattern drills — note `easy`/`medium`/`hard` functions you cleared. |
+| **[`03-python-foundations/FOUNDATIONS_COVERAGE.md`](../03-python-foundations/FOUNDATIONS_COVERAGE.md)** | **A→Z checklist** — confirm every CURRICULUM letter maps to something you touched. |
 | **[`START_HERE.md`](../START_HERE.md)** (repo root) | Orientation when switching tracks (e.g. toward **`04-api-engineering/`**). |
 
 ---

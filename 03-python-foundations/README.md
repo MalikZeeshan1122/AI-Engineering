@@ -2,6 +2,8 @@
 
 Core through **advanced** Python aimed at **AI engineering** (prompts, JSON ingestion, HTTP, typing). This directory is self-contained: notebooks, runnable scripts, algorithm drills, and reading guides live side by side.
 
+**Full spine checklist (A→Z → artifacts):** **[`FOUNDATIONS_COVERAGE.md`](FOUNDATIONS_COVERAGE.md)** — use this when you want **every CURRICULUM letter** mapped to a notebook or script in this repo.
+
 ---
 
 ## Map of everything here
@@ -15,6 +17,7 @@ Use this table to see **what each part is for** and **where to start**.
 | **[`oop/`](oop/README.md)** | **3 notebooks** with daily-life analogies (blueprints, house rules, contracts/plugins). Separate generator `build_oop_notebooks.py`. | People who learn **OOP** better with stories | [`oop/01-oop-beginner-blueprints-and-objects.ipynb`](oop/01-oop-beginner-blueprints-and-objects.ipynb) |
 | **`python-foundations-beginner-to-advanced.ipynb`** | **One big spiral**: explanations + runnable examples + practice parts + solutions (Parts 1–5). | **Review / cram** when you already know Python bits | Open in Jupyter / VS Code |
 | **`CURRICULUM-A-Z.md`** | **Alphabet spine**: why each topic matters for LLMs/RAG/agents + ship-sized drills. | **Pick-by-topic** after the core path | Read any letter you need |
+| **`FOUNDATIONS_COVERAGE.md`** | **A→Z checklist**: maps letters **A–Z** (+ SQLite/pandas/threading extras) to notebooks/scripts here. | Verify **nothing is orphaned** from the spine | Read after notebooks **01→22** |
 
 ### Runnable script folders (stdlib demos)
 
@@ -29,6 +32,17 @@ These folders hold **small `.py` files** you run from the terminal after reading
 | **[`logging/`](logging/README.md)** | `LoggerAdapter`, correlation-style fields | **12** |
 | **[`text_processing/`](text_processing/README.md)** | Fenced JSON extraction before `json.loads` | **13** |
 
+### Extended labs (close remaining spine gaps)
+
+| Folder | Topic | Pair with |
+|--------|--------|-----------|
+| **[`sqlite_intro/`](sqlite_intro/README.md)** | **`sqlite3`** persistence & parameterized SQL | **04**, ingestion mindset |
+| **[`profiling_intro/`](profiling_intro/README.md)** | **`tracemalloc`** snapshots | **16**, CURRICULUM **M** |
+| **[`pandas_intro/`](pandas_intro/README.md)** | **`pandas`** toy metrics (`pip install pandas`) | **16**, tabular prelude |
+| **[`threading_intro/`](threading_intro/README.md)** | **`ThreadPoolExecutor`**, **`queue.Queue`** | **09**, **18**, CURRICULUM **Q** sync |
+| **[`datetime_intro/`](datetime_intro/README.md)** | **`zoneinfo`** conversions | Logs/API timestamps |
+| **[`workers_intro/`](workers_intro/README.md)** | Async pipeline sketch | CURRICULUM **W**, **18** |
+
 From **`03-python-foundations`**:
 
 ```bash
@@ -39,6 +53,13 @@ python generators/read_chunks.py
 python typing/embedder_protocol.py
 python logging/correlation_log_demo.py
 python text_processing/extract_json_fence.py
+python sqlite_intro/sqlite_mini_demo.py
+python profiling_intro/tracemalloc_demo.py
+python pandas_intro/explore_frame.py
+python threading_intro/executor_map_demo.py
+python threading_intro/queue_sync_demo.py
+python datetime_intro/timezone_demo.py
+python workers_intro/async_pipeline_demo.py
 ```
 
 Each folder has its own **`README.md`** with file-by-file notes.
@@ -52,7 +73,9 @@ Each folder has its own **`README.md`** with file-by-file notes.
 3. **`oop/`** anytime after **`exercises/05`**—or whenever OOP clicks better with analogies.
 4. **`python-foundations-beginner-to-advanced.ipynb`** for consolidation or interview refresh.
 5. **`CURRICULUM-A-Z.md`** when you need a topic letter (async, bytes, queues, …).
-6. **Script folders** (`async/`, `decorators/`, …) right **after** the linked notebook numbers above.
+6. **Core script folders** (`async/`, `decorators/`, …) right **after** the linked notebook numbers in their READMEs.
+7. **Extended labs** (`sqlite_intro/`, `profiling_intro/`, `pandas_intro/`, `threading_intro/`, `datetime_intro/`, `workers_intro/`) — see hub **`README.md`** table.
+8. **`FOUNDATIONS_COVERAGE.md`** once through **01→22** to confirm **every A→Z letter** has an artifact mapped.
 
 Track habits in **[`01-daily-log/README.md`](../01-daily-log/README.md)** at the repository root if you keep a learning diary.
 
