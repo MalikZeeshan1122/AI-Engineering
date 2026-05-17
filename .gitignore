@@ -34,5 +34,6 @@ build/
 secrets/
 _notebook_tmp/
 _notebook_tmp_ex/
+_nb_*
 90-resources/**/*.pdf
 !90-resources/README.md
