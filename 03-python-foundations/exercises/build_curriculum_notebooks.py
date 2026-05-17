@@ -4,7 +4,7 @@ Generate progressive Jupyter notebooks for the Python foundations track.
 Run: python build_curriculum_notebooks.py
 
 Format: industry-style learning module (objectives, TOC, demos, progressive drills, exercises, solutions).
-Writes notebooks **01–15** (core 01–10 + stdlib extensions 11–15) as sibling `.ipynb` files in this directory.
+Writes notebooks **01–18** (core 01–10 + extensions 11–18) as sibling `.ipynb` files in this directory.
 """
 
 from __future__ import annotations
@@ -2053,7 +2053,7 @@ def nb15() -> None:
             "Subprocess safety & zip archives",
             "Advanced",
             "`14-bytes-encoding-files.ipynb`",
-            "`../python-foundations-beginner-to-advanced.ipynb` + `../CURRICULUM-A-Z.md`",
+            "`16-numpy-embeddings-shape.ipynb`; then spiral / `CURRICULUM-A-Z.md`",
             [
                 "Invoke CLI tools with argv lists — avoid `shell=True` defaults.",
                 "Capture stdout/stderr with timeouts that match ops expectations.",
@@ -2194,6 +2194,579 @@ print(git_head())'''
     write_nb("15-subprocess-and-archives.ipynb", cells)
 
 
+def nb16() -> None:
+    cells: list[dict[str, Any]] = []
+    cells.extend(
+        banner(
+            "16",
+            "NumPy shape & cosine similarity",
+            "Intermediate → Advanced",
+            "`15-subprocess-and-archives.ipynb`",
+            "`17-pytest-fixtures-parametrize.ipynb`",
+            [
+                "Reason about embedding tensors as `(batch, dim)` arrays.",
+                "Normalize vectors and compute cosine similarity without Python loops over rows.",
+                "Interpret broadcasting errors before scaling retrieval prototypes.",
+            ],
+            [
+                "Install note (`numpy`)",
+                "Shapes, dtypes, norms",
+                "Vectorized cosine rows",
+                "Progressive drills — stack → normalize axis → top-k scores",
+                "Exercise — `cosine_scores`",
+            ],
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Dependency\n\nInstall once per environment:\n\n```bash\npip install numpy\n```\n\nColab runtimes ship **NumPy** by default.\n"
+        )
+    )
+
+    cells.append(
+        section_header(
+            "1 · Shapes, dtypes, norms",
+            "*Explanation:* Embeddings arrive as **`float32`** matrices — `(num_candidates, dim)` — matching rows to a query vector is linear algebra, not nested lists.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import numpy as np
+
+rng = np.random.default_rng(0)
+emb = rng.standard_normal((4, 8), dtype=np.float32)
+query = rng.standard_normal((8,), dtype=np.float32)
+
+print("emb", emb.shape, emb.dtype)
+print("query norm", np.linalg.norm(query))'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "2 · Broadcasting warmup",
+            "*Explanation:* Subtract centroids or scale logits row-wise — broadcasting aligns trailing axes.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import numpy as np
+
+rows = np.arange(12, dtype=np.float32).reshape(3, 4)
+offsets = np.array([10.0, 20.0, 30.0], dtype=np.float32).reshape(3, 1)
+print(rows + offsets)'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "3 · Cosine similarity vectorized",
+            "*Explanation:* Cosine equals dot product after **unit normalization**. Doing `normalize(matrix, axis=1)` mirrors scoring every chunk vs one query.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import numpy as np
+
+rng = np.random.default_rng(1)
+q = rng.standard_normal((128,))
+mat = rng.standard_normal((256, 128))
+
+qn = q / np.linalg.norm(q)
+mn = mat / np.linalg.norm(mat, axis=1, keepdims=True)
+scores = mn @ qn  # shape (256,)
+print(scores.shape, float(scores.max()), float(scores.min()))'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "**Retrieval prototypes** almost always reduce to batched dot products — drills rehearse axis discipline."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — batch dimension sanity\n\nKnow whether vectors are rows or columns before indexing GPU kernels mentally.\n"))
+    cells.append(
+        cell_code(
+            '''import numpy as np
+
+batch = np.ones((16, 768))
+assert batch.ndim == 2
+print(batch.shape[0], "vectors,", batch.shape[1], "dims")'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — pairwise dot without loops\n\nMirror reranking **query × candidates**.\n"))
+    cells.append(
+        cell_code(
+            '''import numpy as np
+
+rng = np.random.default_rng(2)
+q = rng.standard_normal((32,))
+mat = rng.standard_normal((50, 32))
+scores = mat @ q
+print(scores.shape)'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — stable softmax-shaped logits\n\nSubtract row max before `exp` — classic numerical hygiene.\n"))
+    cells.append(
+        cell_code(
+            '''import numpy as np
+
+logits = np.array([[1000.0, 1001.0], [2.0, 3.0]], dtype=np.float64)
+stable = logits - logits.max(axis=1, keepdims=True)
+weights = np.exp(stable)
+weights /= weights.sum(axis=1, keepdims=True)
+print(weights.round(3))'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Exercise — `cosine_scores`\n\nImplement **`cosine_scores(query, embeddings)`** where **`query`** has shape **`(dim,)`** and **`embeddings`** shape **`(n, dim)`**. Return a **`float64`** 1‑D array length **`n`** of cosine similarities. Treat zero vectors defensively by returning **`0.0`** for those rows (avoid divide‑by‑zero).\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import numpy as np
+
+
+def cosine_scores(query: np.ndarray, embeddings: np.ndarray) -> np.ndarray:
+    raise NotImplementedError
+
+
+rng = np.random.default_rng(9)
+q = rng.standard_normal((6,))
+mat = rng.standard_normal((40, 6))
+
+out = cosine_scores(q, mat)
+assert out.shape == (40,)
+qn = q / np.linalg.norm(q)
+mn = mat / np.linalg.norm(mat, axis=1, keepdims=True)
+expected = mn @ qn
+mask = np.linalg.norm(mat, axis=1) == 0
+expected = expected.astype(np.float64)
+expected[mask] = 0.0
+np.testing.assert_allclose(out, expected, rtol=1e-6)
+print("OK")'''
+        )
+    )
+    cells.append(
+        solution_md(
+            "cosine_scores",
+            "import numpy as np\n\ndef cosine_scores(query: np.ndarray, embeddings: np.ndarray) -> np.ndarray:\n    q = np.asarray(query, dtype=np.float64)\n    mat = np.asarray(embeddings, dtype=np.float64)\n    row_norms = np.linalg.norm(mat, axis=1)\n    q_norm = np.linalg.norm(q)\n    out = np.zeros(mat.shape[0], dtype=np.float64)\n    if q_norm == 0:\n        return out\n    mask = row_norms > 0\n    q_unit = q / q_norm\n    safe = mat[mask]\n    safe_unit = safe / row_norms[mask][:, None]\n    out[mask] = safe_unit @ q_unit\n    return out",
+        )
+    )
+
+    write_nb("16-numpy-embeddings-shape.ipynb", cells)
+
+
+def nb17() -> None:
+    cells: list[dict[str, Any]] = []
+    cells.extend(
+        banner(
+            "17",
+            "pytest — fixtures & parametrize patterns",
+            "Intermediate → Advanced",
+            "`16-numpy-embeddings-shape.ipynb`",
+            "`18-asyncio-queue-pipelines.ipynb`",
+            [
+                "Mirror pytest ergonomics (`tmp_path`, parametrization) while staying notebook-friendly.",
+                "Isolate filesystem tests via temporary directories.",
+                "Catch expected failures with structured patterns.",
+            ],
+            [
+                "Why migrate beyond bare asserts",
+                "`TemporaryDirectory` ≈ `tmp_path`",
+                "Table-driven ↔ `@pytest.mark.parametrize`",
+                "Progressive drills — raises → golden JSON → fixture reuse",
+                "Exercise — split_batches tests",
+            ],
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Dependency\n\n```bash\npip install pytest\n```\n\nNotebook cells below run **without** pytest using stdlib **`tempfile`**; copy the collapsed solutions into **`tests/`** modules when you adopt pytest locally.\n"
+        )
+    )
+
+    cells.append(
+        section_header(
+            "1 · Why migrate beyond bare asserts",
+            "*Explanation:* **`pytest`** discovers tests, captures stdout, reports diff snippets — migrate parsers (`JSON`, fences) early.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''# Bare notebook guard — pytest replaces loops like this with discovery + richer failures.
+
+
+def split_batches(items: list[str], size: int) -> list[list[str]]:
+    if size < 1:
+        raise ValueError("size must be positive")
+    return [items[i : i + size] for i in range(0, len(items), size)]
+
+
+cases = [
+    ([], 3, []),
+    (["a"], 3, [["a"]]),
+    (["a", "b", "c", "d"], 2, [["a", "b"], ["c", "d"]]),
+]
+for items, size, expected in cases:
+    assert split_batches(items, size) == expected
+print("table assertions OK")'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "2 · `TemporaryDirectory` ≈ `tmp_path`",
+            "*Explanation:* **`tmp_path`** is a pathlib **`Path`** — rehearsal uses **`TemporaryDirectory`** plus **`Path`** join semantics.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''from pathlib import Path
+import json
+import tempfile
+
+
+def dump_roundtrip(payload: dict, folder: Path) -> dict:
+    target = folder / "payload.json"
+    target.write_text(json.dumps(payload))
+    return json.loads(target.read_text())
+
+
+with tempfile.TemporaryDirectory() as td:
+    got = dump_roundtrip({"model": "mini"}, Path(td))
+    assert got["model"] == "mini"
+print("tmp mirror OK")'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "3 · Expect failures cleanly",
+            "*Explanation:* **`pytest.raises`** documents contracts — notebooks mimic **`try` / `except`** blocks until you promote snippets into **`tests/`**.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''def must_positive(x: int) -> int:
+    if x <= 0:
+        raise ValueError("need positive")
+    return x
+
+
+try:
+    must_positive(0)
+except ValueError as exc:
+    print("caught:", exc)'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "**Golden-file parsers** deserve repeatable fixtures — drills mimic pytest ergonomics inside Jupyter."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — inequality diagnostics\n\nPrefer assertions that describe slices (`got[:40]`).\n"))
+    cells.append(
+        cell_code(
+            '''text = '{"ok": true}'
+assert '"ok"' in text
+print("substring guard OK")'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — normalize paths before comparison\n\nAlways **`resolve()`** when comparing tmp hierarchies.\n"))
+    cells.append(
+        cell_code(
+            '''from pathlib import Path
+import tempfile
+
+with tempfile.TemporaryDirectory() as td:
+    p = Path(td) / "nested" / "file.txt"
+    p.parent.mkdir(parents=True)
+    p.write_text("x")
+    assert p.resolve().parent.name == "nested"
+print("path stable OK")'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — record stderr-shaped payloads\n\nThink regression snapshots for CLI tooling wrappers.\n"))
+    cells.append(
+        cell_code(
+            '''payload = {"tool": "search", "argc": 3}
+frozen_keys = tuple(sorted(payload))
+assert frozen_keys == ("argc", "tool")
+print("canonical tuple OK")'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Exercise — harden `split_batches`\n\n1. Add **`assert`** checks (loop ok) proving **`split_batches`** rejects **`size <= 0`** with **`ValueError`**.\n2. Add one positive-path assert with **`[\"x\"] * 5`** and **`size=2`**.\n\n<details><summary>Optional pytest module sketch</summary>\n\n```python\nimport pytest\nfrom lesson import split_batches\n\n@pytest.mark.parametrize(\n    \"items,size,expected\",\n    [\n        ([], 3, []),\n        ([\"a\", \"b\", \"c\", \"d\"], 2, [[\"a\", \"b\"], [\"c\", \"d\"]]),\n    ],\n)\ndef test_batches_ok(items, size, expected):\n    assert split_batches(items, size) == expected\n\ndef test_batches_bad_size():\n    with pytest.raises(ValueError):\n        split_batches([\"a\"], 0)\n```\n\n</details>\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''# Uses split_batches from cell \"Why migrate beyond bare asserts\" — add checks below.
+
+
+try:
+    split_batches(["a"], 0)
+except ValueError:
+    print("reject non-positive sizes OK")
+else:
+    raise AssertionError("expected ValueError for size<=0")
+
+assert split_batches(["x"] * 5, 2) == [["x", "x"], ["x", "x"], ["x"]]
+print("batch shapes OK")'''
+        )
+    )
+    cells.append(
+        solution_md(
+            "split_batches checks",
+            'def split_batches(items: list[str], size: int) -> list[list[str]]:\n    if size < 1:\n        raise ValueError("size must be positive")\n    return [items[i : i + size] for i in range(0, len(items), size)]\n\ntry:\n    split_batches(["a"], 0)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError("expected ValueError")\n\nassert split_batches(["x"] * 5, 2) == [["x", "x"], ["x", "x"], ["x"]]',
+        )
+    )
+
+    write_nb("17-pytest-fixtures-parametrize.ipynb", cells)
+
+
+def nb18() -> None:
+    cells: list[dict[str, Any]] = []
+    cells.extend(
+        banner(
+            "18",
+            "asyncio queues & backpressure",
+            "Advanced",
+            "`17-pytest-fixtures-parametrize.ipynb`",
+            "`../python-foundations-beginner-to-advanced.ipynb` + `../CURRICULUM-A-Z.md`",
+            [
+                "Connect producers and consumers with **`asyncio.Queue`**.",
+                "Use **`maxsize`** for bounded backpressure before GPUs/APIs overload.",
+                "Shut pipelines down with sentinel values + **`task_done`** discipline.",
+            ],
+            [
+                "`Queue` basics",
+                "Bounded producers",
+                "Sentinel shutdown",
+                "Progressive drills — FIFO → bounded fan-out → cooperative shutdown",
+                "Exercise — `fan_in_merge`",
+            ],
+        )
+    )
+
+    cells.append(
+        section_header(
+            "1 · `asyncio.Queue` basics",
+            "*Explanation:* Tasks **`await queue.put`** when full and **`await queue.get`** when empty — matches ingestion workers draining embeddings.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import asyncio
+
+async def fifo_demo():
+    q: asyncio.Queue[str] = asyncio.Queue()
+    await q.put("chunk-a")
+    await q.put("chunk-b")
+    print(await q.get(), await q.get())
+
+await fifo_demo()'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "2 · Bounded backpressure",
+            "*Explanation:* **`maxsize=N`** blocks aggressive producers until consumers catch up — protects RAM during burst uploads.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import asyncio
+
+async def bounded_demo():
+    q: asyncio.Queue[int] = asyncio.Queue(maxsize=2)
+
+    async def producer():
+        for i in range(4):
+            await q.put(i)
+            print("produced", i)
+
+    async def consumer():
+        await asyncio.sleep(0.05)
+        for _ in range(4):
+            print("consumed", await q.get())
+
+    await asyncio.gather(producer(), consumer())
+
+await bounded_demo()'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "3 · Sentinel shutdown",
+            "*Explanation:* Push a **`None`** (or sentinel singleton) after real items so consumers exit cleanly.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import asyncio
+
+_STOP = object()
+
+
+async def drain(q: asyncio.Queue):
+    buf = []
+    while True:
+        item = await q.get()
+        if item is _STOP:
+            q.task_done()
+            break
+        buf.append(item)
+        q.task_done()
+    return buf
+
+
+async def sentinel_demo():
+    q: asyncio.Queue = asyncio.Queue()
+    await q.put("a")
+    await q.put(_STOP)
+    print(await drain(q))
+
+await sentinel_demo()'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "**Streaming ingestion** stacks queues between HTTP receivers and embedding workers — drills rehearse bounded FIFO semantics."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — `join()` waits on producers\n\nCall **`await queue.join()`** after scheduling producers when each item invokes **`task_done`**.\n"))
+    cells.append(
+        cell_code(
+            '''import asyncio
+
+async def join_demo():
+    q: asyncio.Queue[int] = asyncio.Queue()
+
+    async def worker():
+        while True:
+            item = await q.get()
+            if item is None:
+                q.task_done()
+                break
+            q.task_done()
+
+    task = asyncio.create_task(worker())
+    for val in (1, 2, 3):
+        await q.put(val)
+    await q.put(None)
+    await q.join()
+    await task
+
+await join_demo()
+print("join OK")'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — deterministic multi-queue reads\n\nAlternate **`get`** calls when each shard exposes ordered chunks.\n"))
+    cells.append(
+        cell_code(
+            '''import asyncio
+
+async def merge_demo():
+    q1: asyncio.Queue[int] = asyncio.Queue()
+    q2: asyncio.Queue[int] = asyncio.Queue()
+    await q1.put(3)
+    await q2.put(1)
+    await q1.put(4)
+    await q2.put(2)
+    seq = [
+        await q1.get(),
+        await q2.get(),
+        await q1.get(),
+        await q2.get(),
+    ]
+    print(sorted(seq))
+
+await merge_demo()'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — paced producer vs consumer\n\n`asyncio.sleep` inside producers simulates token refill pacing.\n"))
+    cells.append(
+        cell_code(
+            '''import asyncio
+
+async def paced_demo():
+    q: asyncio.Queue[str] = asyncio.Queue(maxsize=2)
+
+    async def producer():
+        for lab in ["a", "b", "c"]:
+            await asyncio.sleep(0.02)
+            await q.put(lab)
+
+    async def consumer():
+        out = []
+        for _ in range(3):
+            out.append(await q.get())
+        print("drained", out)
+
+    await asyncio.gather(producer(), consumer())
+
+await paced_demo()'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Exercise — `fan_in_merge`\n\nImplement **`async def fan_in_merge(qs: list[asyncio.Queue[str]], stop_sentinel: object) -> list[str]`** returning **every non-sentinel string**, sorted alphabetically.\n\nRules:\n\n- Initially schedule **`get()`** on **each** queue ( **`asyncio.create_task`** ).\n- Whenever a **`get`** completes: if the value **`is`** **`stop_sentinel`**, **stop scheduling that queue**; otherwise append the string and schedule **`get()`** again on **that same queue**.\n- When **no tasks remain**, return **`sorted(collected)`**.\n\nSeed example:\n\n```python\nsentinel = object()\nq1.put_nowait(\"delta\"); q1.put_nowait(sentinel)\nq2.put_nowait(\"alpha\"); q2.put_nowait(sentinel)\n```\n\nExpect **`[\"alpha\", \"delta\"]`**.\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import asyncio
+
+
+async def fan_in_merge(qs: list[asyncio.Queue[str]], stop_sentinel: object) -> list[str]:
+    raise NotImplementedError
+
+
+async def exercise_main():
+    sentinel = object()
+    q1: asyncio.Queue[str] = asyncio.Queue()
+    q2: asyncio.Queue[str] = asyncio.Queue()
+    q1.put_nowait("delta")
+    q1.put_nowait(sentinel)
+    q2.put_nowait("alpha")
+    q2.put_nowait(sentinel)
+    got = await fan_in_merge([q1, q2], sentinel)
+    assert got == ["alpha", "delta"]
+
+
+await exercise_main()
+print("OK")'''
+        )
+    )
+    cells.append(
+        solution_md(
+            "fan_in_merge",
+            'import asyncio\n\nasync def fan_in_merge(qs: list[asyncio.Queue[str]], stop_sentinel: object) -> list[str]:\n    collected: list[str] = []\n    pending: dict[asyncio.Task[str], asyncio.Queue[str]] = {}\n\n    def launch(q: asyncio.Queue[str]) -> None:\n        pending[asyncio.create_task(q.get())] = q\n\n    for q in qs:\n        launch(q)\n\n    while pending:\n        done, _ = await asyncio.wait(pending.keys(), return_when=asyncio.FIRST_COMPLETED)\n        task = done.pop()\n        q = pending.pop(task)\n        item = task.result()\n        if item is stop_sentinel:\n            continue\n        collected.append(item)\n        launch(q)\n\n    return sorted(collected)',
+        )
+    )
+
+    write_nb("18-asyncio-queue-pipelines.ipynb", cells)
+
+
 def main() -> None:
     nb01()
     nb02()
@@ -2210,7 +2783,10 @@ def main() -> None:
     nb13()
     nb14()
     nb15()
-    print("Done. Generated 15 notebooks in", OUT_DIR)
+    nb16()
+    nb17()
+    nb18()
+    print("Done. Generated 18 notebooks in", OUT_DIR)
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ Core and **advanced** Python for AI engineering—before leaning hard on framewo
 
 ## Step-by-step curriculum notebooks (`exercises/`)
 
-**15 notebooks** (**01 → 15**): core **01–10** plus stdlib-focused **11–15** — beginner syntax through async, testing, collections/itertools, logging, regex, bytes, and subprocess/zip — **MOOC-style layout** (objectives, TOC, demos, progressive drills, exercises, collapsible solutions). Start here for structured daily progress:
+**18 notebooks** (**01 → 18**): core **01–10**, stdlib-focused **11–15**, plus labs **16–18** (NumPy vectors, pytest habits, asyncio queues — install **`numpy`** / **`pytest`** when you reach those) — beginner syntax through async, testing, collections/itertools, logging, regex, bytes, subprocess/zip, and retrieval-shaped numerics — **MOOC-style layout** (objectives, TOC, demos, progressive drills, exercises, collapsible solutions). Start here for structured daily progress:
 
 **[`exercises/README.md`](exercises/README.md)** — open [`exercises/01-syntax-values-and-io.ipynb`](exercises/01-syntax-values-and-io.ipynb) first.
 
@@ -45,7 +45,7 @@ Suggested layout:
 
 ```
 03-python-foundations/
-├── exercises/           ← 01–15 curriculum notebooks (01–10 core + 11–15 stdlib extensions)
+├── exercises/           ← 01–18 curriculum notebooks (core + stdlib + NumPy/pytest/queues)
 ├── oop/                 ← 01–03 OOP-only spiral + daily-life stories
 ├── python-foundations-beginner-to-advanced.ipynb
 ├── CURRICULUM-A-Z.md

@@ -23,8 +23,11 @@ Progressive Jupyter notebooks from **beginner → advanced**, tuned for **AI eng
 | 13 | [`13-regex-text-extraction.ipynb`](13-regex-text-extraction.ipynb) | `re.compile`, citations, fenced JSON extraction |
 | 14 | [`14-bytes-encoding-files.ipynb`](14-bytes-encoding-files.ipynb) | UTF-8 boundaries, decode `errors=`, chunked hashing |
 | 15 | [`15-subprocess-and-archives.ipynb`](15-subprocess-and-archives.ipynb) | Safe `subprocess.run`, timeouts, `zipfile`, zip-slip awareness |
+| 16 | [`16-numpy-embeddings-shape.ipynb`](16-numpy-embeddings-shape.ipynb) | NumPy shapes, norms, vectorized cosine scoring (`pip install numpy`) |
+| 17 | [`17-pytest-fixtures-parametrize.ipynb`](17-pytest-fixtures-parametrize.ipynb) | `tmp_path`-style temps, parametrized tables (`pip install pytest`) |
+| 18 | [`18-asyncio-queue-pipelines.ipynb`](18-asyncio-queue-pipelines.ipynb) | `asyncio.Queue`, bounded queues, sentinel shutdown, fan-in merge |
 
-**Extended track (11 → 15)** maps to practical stdlib topics from [`../CURRICULUM-A-Z.md`](../CURRICULUM-A-Z.md): collections/itertools (**I**), logging (**L**), regex (**R**), bytes (**B**), subprocess/archives (**S**, **Z**).
+**Extended track (11 → 18)** maps to [`../CURRICULUM-A-Z.md`](../CURRICULUM-A-Z.md): **I** (itertools-style batches covered earlier), **L**, **R**, **B**, **S**, **Z**, plus **N** (NumPy), **U** (pytest patterns), **Q** (queues).
 
 Then open the **single-volume spiral**: [`../python-foundations-beginner-to-advanced.ipynb`](../python-foundations-beginner-to-advanced.ipynb) and cross-check with [`../CURRICULUM-A-Z.md`](../CURRICULUM-A-Z.md).
 
@@ -58,7 +61,7 @@ cd exercises
 python build_curriculum_notebooks.py
 ```
 
-Requires Python **3.10+** for notebook cell snippets using modern typing syntax (`|` unions, `list[str]`).
+Requires Python **3.10+** for notebook cell snippets using modern typing syntax (`|` unions, `list[str]`). Notebooks **16** and **17** expect **`numpy`** and **`pytest`** respectively (`pip install numpy pytest`).
 
 ---
 
