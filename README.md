@@ -2,6 +2,10 @@
 
 Personal learning lab and portfolio for AI engineering — Python backends, LLMs, RAG, agents, and production deployments.
 
+## Maintainer
+
+**Muhammad Zeeshan** — Founder, **[ZorceX](https://zorcex.com/)** · **[LinkedIn](https://www.linkedin.com/in/muhammadzeeshan007/)**
+
 ## Linear path A → Z
 
 Open **[`START_HERE.md`](START_HERE.md)** for the ordered sequence (which folder comes first, second, … through portfolio). **[`ROADMAP.md`](ROADMAP.md)** stays the phased timeline.
