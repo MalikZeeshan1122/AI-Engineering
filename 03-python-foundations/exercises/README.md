@@ -26,8 +26,12 @@ Progressive Jupyter notebooks from **beginner → advanced**, tuned for **AI eng
 | 16 | [`16-numpy-embeddings-shape.ipynb`](16-numpy-embeddings-shape.ipynb) | NumPy shapes, norms, vectorized cosine scoring (`pip install numpy`) |
 | 17 | [`17-pytest-fixtures-parametrize.ipynb`](17-pytest-fixtures-parametrize.ipynb) | `tmp_path`-style temps, parametrized tables (`pip install pytest`) |
 | 18 | [`18-asyncio-queue-pipelines.ipynb`](18-asyncio-queue-pipelines.ipynb) | `asyncio.Queue`, bounded queues, sentinel shutdown, fan-in merge |
+| 19 | [`19-httpx-http-clients.ipynb`](19-httpx-http-clients.ipynb) | Sync **`httpx`** clients, timeouts, JSON GETs, HTTP vs transport errors (`pip install httpx`) |
+| 20 | [`20-positional-keyword-only-signatures.ipynb`](20-positional-keyword-only-signatures.ipynb) | Positional-only **`/`**, keyword-only **`*`**, SDK-shaped wrappers |
+| 21 | [`21-venv-and-dependency-pins.ipynb`](21-venv-and-dependency-pins.ipynb) | **`venv`** workflow, **`pip`** introspection, parsing **`requirements`** pins |
+| 22 | [`22-html-parser-text.ipynb`](22-html-parser-text.ipynb) | **`html.parser`**, strip **`script`/`style`**, visible text for RAG-ish cleanup |
 
-**Extended track (11 → 18)** maps to [`../CURRICULUM-A-Z.md`](../CURRICULUM-A-Z.md): **I** (itertools-style batches covered earlier), **L**, **R**, **B**, **S**, **Z**, plus **N** (NumPy), **U** (pytest patterns), **Q** (queues).
+**Extended track (11 → 22)** maps to [`../CURRICULUM-A-Z.md`](../CURRICULUM-A-Z.md): **I**, **L**, **R**, **B**, **S**, **Z**, **N**, **U**, **Q**, plus **H** (HTTP), **K** (keyword-only / **`/`** shapes), **V** (pins / envs), **X** (HTML parsing).
 
 Then open the **single-volume spiral**: [`../python-foundations-beginner-to-advanced.ipynb`](../python-foundations-beginner-to-advanced.ipynb) and cross-check with [`../CURRICULUM-A-Z.md`](../CURRICULUM-A-Z.md).
 
@@ -61,7 +65,7 @@ cd exercises
 python build_curriculum_notebooks.py
 ```
 
-Requires Python **3.10+** for notebook cell snippets using modern typing syntax (`|` unions, `list[str]`). Notebooks **16** and **17** expect **`numpy`** and **`pytest`** respectively (`pip install numpy pytest`).
+Requires Python **3.10+** for notebook cell snippets using modern typing syntax (`|` unions, `list[str]`). Install extras when noted: **`numpy`**, **`pytest`** (16–17), **`httpx`** (19).
 
 ---
 

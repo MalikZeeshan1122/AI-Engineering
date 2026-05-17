@@ -4,7 +4,7 @@ Generate progressive Jupyter notebooks for the Python foundations track.
 Run: python build_curriculum_notebooks.py
 
 Format: industry-style learning module (objectives, TOC, demos, progressive drills, exercises, solutions).
-Writes notebooks **01–18** (core 01–10 + extensions 11–18) as sibling `.ipynb` files in this directory.
+Writes notebooks **01–22** (core 01–10 + extensions 11–22) as sibling `.ipynb` files in this directory.
 """
 
 from __future__ import annotations
@@ -2545,7 +2545,7 @@ def nb18() -> None:
             "asyncio queues & backpressure",
             "Advanced",
             "`17-pytest-fixtures-parametrize.ipynb`",
-            "`../python-foundations-beginner-to-advanced.ipynb` + `../CURRICULUM-A-Z.md`",
+            "`19-httpx-http-clients.ipynb`",
             [
                 "Connect producers and consumers with **`asyncio.Queue`**.",
                 "Use **`maxsize`** for bounded backpressure before GPUs/APIs overload.",
@@ -2767,6 +2767,644 @@ print("OK")'''
     write_nb("18-asyncio-queue-pipelines.ipynb", cells)
 
 
+def nb19() -> None:
+    cells: list[dict[str, Any]] = []
+    cells.extend(
+        banner(
+            "19",
+            "HTTP clients & timeouts (`httpx`)",
+            "Intermediate → Advanced",
+            "`18-asyncio-queue-pipelines.ipynb`",
+            "`20-positional-keyword-only-signatures.ipynb`",
+            [
+                "Issue GET requests with explicit timeouts — LLM gateways punish hangs.",
+                "Surface HTTP failures as actionable exceptions.",
+                "Mirror FastAPI-facing discipline before mixing streaming APIs.",
+            ],
+            [
+                "Install **`httpx`**",
+                "Sync client + JSON payloads",
+                "`raise_for_status` semantics",
+                "Progressive drills — HEAD probe → JSON decode → typed error buckets",
+                "Exercise — `fetch_json` helper",
+            ],
+        )
+    )
+
+    cells.append(cell_md("### Dependency\n\n```bash\npip install httpx\n```\n\nRequires outbound HTTPS for demo URLs (firewall-friendly).\n"))
+
+    cells.append(
+        section_header(
+            "1 · Sync client + JSON payloads",
+            "*Explanation:* **`httpx.Client`** composes defaults (`timeout`, headers). Swap for **`AsyncClient`** once **`await`** plumbing matches **`nb09`**.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import httpx
+
+sample_url = "https://jsonplaceholder.typicode.com/posts/1"
+
+with httpx.Client(timeout=10.0) as client:
+    response = client.get(sample_url)
+    response.raise_for_status()
+    payload = response.json()
+
+print(payload["title"][:48])'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "2 · Error surfaces",
+            "*Explanation:* **`raise_for_status()`** maps failure bands—mirror later mappings from vendor codes to retries.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import httpx
+
+bad_url = "https://jsonplaceholder.typicode.com/posts/999999"
+
+try:
+    with httpx.Client(timeout=10.0) as client:
+        r = client.get(bad_url)
+        r.raise_for_status()
+except httpx.HTTPStatusError as exc:
+    print("HTTP layer:", exc.response.status_code)'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "3 · Headers & tracing placeholders",
+            "*Explanation:* Attach **`Authorization`** / **`x-request-id`** at construction time — avoids scattering secrets.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import httpx
+
+headers = {"User-Agent": "ai-foundations-drill/1.0", "x-demo": "trace-local"}
+
+with httpx.Client(timeout=5.0, headers=headers) as client:
+    r = client.get("https://jsonplaceholder.typicode.com/posts/2")
+    r.raise_for_status()
+    print(r.json()["id"])'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "**Tool routers** wrap HTTP boundaries — drills rehearse timeouts before wiring multimodal endpoints."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — bounded latency\n\nNever omit **`timeout=`** — infinite waits stall notebooks and workers alike.\n"))
+    cells.append(
+        cell_code(
+            '''import httpx
+
+with httpx.Client(timeout=1.0) as client:
+    ok = client.get("https://jsonplaceholder.typicode.com/posts/3")
+    ok.raise_for_status()
+    print(ok.status_code)'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — decode JSON safely\n\nIsolate **`JSONDecodeError`** from transport failures.\n"))
+    cells.append(
+        cell_code(
+            '''import httpx
+
+with httpx.Client(timeout=5.0) as client:
+    r = client.get("https://jsonplaceholder.typicode.com/posts/4")
+    r.raise_for_status()
+    body = r.json()
+    assert isinstance(body, dict)
+    print(sorted(body.keys())[:4])'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — classify transport vs HTTP vs decode\n\nCatch **`httpx.RequestError`** separately from status failures.\n"))
+    cells.append(
+        cell_code(
+            '''import httpx
+
+def classify(url: str) -> str:
+    try:
+        with httpx.Client(timeout=3.0) as client:
+            r = client.get(url)
+            r.raise_for_status()
+    except httpx.HTTPStatusError:
+        return "http_status"
+    except httpx.RequestError:
+        return "transport"
+    return "ok"
+
+
+print(classify("https://jsonplaceholder.typicode.com/posts/1"))
+print(classify("https://jsonplaceholder.typicode.com/posts/40404"))'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Exercise — `fetch_json`\n\nImplement **`fetch_json(url: str, *, timeout: float = 10.0) -> dict`** using **`httpx.Client(timeout=timeout)`**, **`GET`**, **`raise_for_status()`**, then **`response.json()`**. If decoding yields **`list`** instead of **`dict`**, raise **`TypeError(\"expected JSON object\")`**.\n\nRun against **`https://jsonplaceholder.typicode.com/posts/5`**.\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import httpx
+
+
+def fetch_json(url: str, *, timeout: float = 10.0) -> dict:
+    raise NotImplementedError
+
+
+demo_url = "https://jsonplaceholder.typicode.com/posts/5"
+payload = fetch_json(demo_url)
+assert payload["id"] == 5
+print("OK")'''
+        )
+    )
+    cells.append(
+        solution_md(
+            "fetch_json",
+            'import httpx\n\ndef fetch_json(url: str, *, timeout: float = 10.0) -> dict:\n    with httpx.Client(timeout=timeout) as client:\n        response = client.get(url)\n        response.raise_for_status()\n        data = response.json()\n        if not isinstance(data, dict):\n            raise TypeError("expected JSON object")\n        return data',
+        )
+    )
+
+    write_nb("19-httpx-http-clients.ipynb", cells)
+
+
+def nb20() -> None:
+    cells: list[dict[str, Any]] = []
+    cells.extend(
+        banner(
+            "20",
+            "Positional-only & keyword-only APIs (`/` `*`)",
+            "Intermediate",
+            "`19-httpx-http-clients.ipynb`",
+            "`21-venv-and-dependency-pins.ipynb`",
+            [
+                "Freeze brittle positional arguments (`prompt`, `messages`).",
+                "Force keyword clarity for knobs (`temperature`, `stream`).",
+                "Design wrappers that survive signature churn across vendors.",
+            ],
+            [
+                "`/` positional-only zone",
+                "`*` keyword-only zone",
+                "Combined staging shapes",
+                "Progressive drills — clarify calls → forbid drift → orchestrator façade",
+                "Exercise — `tool_call` boundary",
+            ],
+        )
+    )
+
+    cells.append(
+        section_header(
+            "1 · Positional-only (`/`)",
+            "*Explanation:* **`/`** stops callers from passing prompts positionally beyond what you intend — protects wrappers embedding **`messages`** arrays.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''def relay(prompt: str, /, vendor: str) -> str:
+    return f"{vendor}:{prompt[:12]}"
+
+
+print(relay("Summarize outage timeline", vendor="east"))'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "2 · Keyword-only (`*`)",
+            "*Explanation:* After **`*`**, callers **must** name **`temperature=`**, **`stream=`**, **`tools=`** — IDE hints stay faithful.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''def invoke(*, model: str, temperature: float = 0.2, stream: bool = False) -> str:
+    mode = "sse" if stream else "batch"
+    return f"{model}|{temperature}|{mode}"
+
+
+print(invoke(model="gpt-mini", stream=True))'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "3 · Combined staging",
+            "*Explanation:* **`prompt` positional-only + hyperparameters keyword-only** mirrors SDK ergonomics.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''def chat(prompt: str, /, *, model: str, max_tokens: int = 512) -> str:
+    return f"{model}({max_tokens}) <- {prompt.split()[0]}"
+
+
+print(chat("Explain asyncio queues", model="opus"))'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "**Signature hygiene** prevents accidental argument drift when merging LangChain-style wrappers."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — positional clarity\n\nReserve positional slots for payloads only.\n"))
+    cells.append(
+        cell_code(
+            '''def embed(text: str, /, dims: int = 768) -> tuple[str, int]:
+    return ("fake", dims)
+
+
+print(embed("chunk body", dims=512))'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — forbid ambiguous booleans\n\nKeyword-only removes **`True`** positional traps.\n"))
+    cells.append(
+        cell_code(
+            '''def rerank(query: str, /, *, aggressive: bool = False) -> str:
+    return f"{query}:{int(aggressive)}"
+
+
+print(rerank("latency regressions", aggressive=True))'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — façade forwarding\n\nCompose vendors without leaking positional quirks upward.\n"))
+    cells.append(
+        cell_code(
+            '''def vendor_raw(blob: str, /, vendor_tag: str) -> str:
+    return f"[{vendor_tag}]{blob}"
+
+
+def façade(user_prompt: str, /, *, vendor_tag: str, polish: bool = False) -> str:
+    core = vendor_raw(user_prompt.strip(), vendor_tag)
+    return core.upper() if polish else core
+
+
+print(façade(" hello ", vendor_tag="az", polish=True))'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Exercise — `tool_call`\n\nImplement **`def tool_call(name: str, /, *, payload: dict[str, str], dry_run: bool = False) -> str`** returning **`NAME|dry=<bool>|<sorted kv tuples>`** using **`repr(tuple(sorted(payload.items())))`** for the tail.\n\nExample: **`tool_call(\"search\", payload={\"q\": \"rag\"}, dry_run=True)`** starts with **`SEARCH|dry=True|`**.\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''def tool_call(name: str, /, *, payload: dict[str, str], dry_run: bool = False) -> str:
+    raise NotImplementedError
+
+
+sample = tool_call("search", payload={"q": "rag"}, dry_run=True)
+assert sample.startswith("SEARCH|dry=True|")
+assert "'q'" in sample
+print("OK")'''
+        )
+    )
+    cells.append(
+        solution_md(
+            "tool_call",
+            'def tool_call(name: str, /, *, payload: dict[str, str], dry_run: bool = False) -> str:\n    tail = repr(tuple(sorted(payload.items())))\n    return f"{name.upper()}|dry={dry_run}|{tail}"',
+        )
+    )
+
+    write_nb("20-positional-keyword-only-signatures.ipynb", cells)
+
+
+def nb21() -> None:
+    cells: list[dict[str, Any]] = []
+    cells.extend(
+        banner(
+            "21",
+            "Virtual envs & dependency pins",
+            "Intermediate",
+            "`20-positional-keyword-only-signatures.ipynb`",
+            "`22-html-parser-text.ipynb`",
+            [
+                "Explain **`venv`** isolation vs global interpreters.",
+                "Parse **`requirements.txt`**-style pins mentally.",
+                "Know why reproducible stacks beat notebook-only installs.",
+            ],
+            [
+                "`python -m venv` recap",
+                "`pip` introspection",
+                "Pin notation (`==`, `>=`)",
+                "Progressive drills — freeze lists → comments → editable installs mindset",
+                "Exercise — `parse_pins`",
+            ],
+        )
+    )
+
+    cells.append(
+        section_header(
+            "1 · `python -m venv` recap",
+            "*Explanation:* Creates **`Scripts/python`** (Windows) / **`bin/python`** (POSIX) isolated — protects system Python.",
+        )
+    )
+    cells.append(
+        cell_md(
+            "```bash\npython -m venv .venv\n# Windows activation:\n.venv\\Scripts\\activate\n# POSIX:\nsource .venv/bin/activate\npython -m pip install --upgrade pip\n```\n"
+        )
+    )
+
+    cells.append(
+        section_header(
+            "2 · `pip` introspection",
+            "*Explanation:* **`pip freeze`** snapshots pins — CI compares against locked requirements.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import subprocess
+
+proc = subprocess.run(
+    ["python", "-m", "pip", "--version"],
+    capture_output=True,
+    text=True,
+    check=True,
+)
+print(proc.stdout.strip())'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "3 · Pin notation",
+            "*Explanation:* **`==`** pins exact releases; **`>=`** expresses floors — combine judiciously before **`torch`**-scale stacks.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''pins = ["numpy>=1.24", "httpx==0.27.0"]
+for pin in pins:
+    print(pin.split("==")[0] if "==" in pin else pin.split(">=")[0])'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "**Shipping demos** relies on reproducible installs — drills mimic CI parsing guards."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — strip inline comments\n\nComments belong outside resolver graphs.\n"))
+    cells.append(
+        cell_code(
+            '''raw = "numpy>=1.24  # cuda build\\nhttpx==0.27.0"
+clean_lines = [ln.split("#")[0].strip() for ln in raw.splitlines() if ln.strip()]
+print(clean_lines)'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — normalize casing\n\nPackage names conventionally lowercase — normalize before hashing locks.\n"))
+    cells.append(
+        cell_code(
+            '''specs = {"NumPy": "1.26.0", "HTTPCORE": "1.0.0"}
+canonical = {k.lower(): v for k, v in specs.items()}
+print(canonical)'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — editable install vocabulary\n\n**`-e .`** wires local packages — priceless monorepo ergonomics.\n"))
+    cells.append(
+        cell_md(
+            "```bash\npip install -e .\n```\n\nAdds **`pyproject.toml`** projects onto **`PYTHONPATH`** without reinstall loops.\n"
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Exercise — `parse_pins`\n\nImplement **`parse_pins(blob: str) -> dict[str, str]`** scanning **`blob.splitlines()`**. Skip blanks after stripping. Strip inline **`#`** comments per line. For remaining lines containing **`==`** or **`>=`**, split once on that delimiter (prefer **`==`** when both appear — uncommon). Keys are **`pkg.strip().lower()`**, values are **`version.strip()`**. Ignore malformed lines quietly.\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''def parse_pins(blob: str) -> dict[str, str]:
+    raise NotImplementedError
+
+
+sample = """numpy>=1.24 # tensors
+httpx==0.27.0
+
+badline
+Torch>=2.2  # intentional uppercase vendor spelling for drill
+"""
+parsed = parse_pins(sample)
+assert parsed["numpy"] == "1.24"
+assert parsed["httpx"] == "0.27.0"
+assert parsed["torch"] == "2.2"
+print("OK")'''
+        )
+    )
+    cells.append(
+        solution_md(
+            "parse_pins",
+            'def parse_pins(blob: str) -> dict[str, str]:\n    out: dict[str, str] = {}\n    for raw in blob.splitlines():\n        line = raw.split(\"#\")[0].strip()\n        if not line:\n            continue\n        if \"==\" in line:\n            sep = \"==\"\n        elif \">=\" in line:\n            sep = \">=\"\n        else:\n            continue\n        pkg, _, ver = line.partition(sep)\n        pkg = pkg.strip()\n        ver = ver.strip()\n        if not pkg or not ver:\n            continue\n        out[pkg.lower()] = ver\n    return out',
+        )
+    )
+
+    write_nb("21-venv-and-dependency-pins.ipynb", cells)
+
+
+def nb22() -> None:
+    cells: list[dict[str, Any]] = []
+    cells.extend(
+        banner(
+            "22",
+            "HTML parsing & visible text (`html.parser`)",
+            "Intermediate → Advanced",
+            "`21-venv-and-dependency-pins.ipynb`",
+            "`../python-foundations-beginner-to-advanced.ipynb` + `../CURRICULUM-A-Z.md`",
+            [
+                "Prefer parsers over naive regex for markup-heavy retrieval sources.",
+                "Skip **`script` / `style` / `noscript`** islands safely.",
+                "Produce coarse plain text suitable for chunking previews.",
+            ],
+            [
+                "`HTMLParser` mechanics",
+                "Skipping hostile subtrees",
+                "Whitespace normalization",
+                "Progressive drills — tiny fragment → nested tags → entities",
+                "Exercise — `visible_html_text`",
+            ],
+        )
+    )
+
+    cells.append(
+        section_header(
+            "1 · `HTMLParser` mechanics",
+            "*Explanation:* Streaming callbacks (**`handle_starttag`**, **`handle_data`**) mirror SAX pipelines — constant memory vs **`BeautifulSoup`** (fine later).",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''from html.parser import HTMLParser
+
+
+class EchoParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.chunks: list[str] = []
+
+    def handle_data(self, data: str) -> None:
+        text = data.strip()
+        if text:
+            self.chunks.append(text)
+
+
+parser = EchoParser()
+parser.feed("<p>hello</p><p>world</p>")
+print(parser.chunks)'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "2 · Skipping hostile subtrees",
+            "*Explanation:* Retrieval ignores **`script`** noise — gate **`handle_data`** when inside forbidden tags.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''from html.parser import HTMLParser
+
+
+class VisibleParser(HTMLParser):
+    _blocked = frozenset({"script", "style", "noscript"})
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.depth = 0
+        self.parts: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs) -> None:
+        if tag.lower() in self._blocked:
+            self.depth += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() in self._blocked and self.depth:
+            self.depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if self.depth:
+            return
+        chunk = data.strip()
+        if chunk:
+            self.parts.append(chunk)
+
+
+html = "<div>Keep<script>secret()</script><p>visible</p></div>"
+vp = VisibleParser()
+vp.feed(html)
+print(vp.parts)'''
+        )
+    )
+
+    cells.append(
+        section_header(
+            "3 · Entities & normalization",
+            "*Explanation:* **`html.unescape`** repairs **`&amp;`** before hashing chunks.",
+        )
+    )
+    cells.append(
+        cell_code(
+            '''import html
+
+blob = html.unescape("Latency &amp; tokens")
+print(blob)'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "**Scraped docs** powering RAG benefit from deterministic parsers — drills mimic stripping boilerplate chrome."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — ignore `<nav>` chrome\n\nTreat navigation buckets like **`script`** when prototyping.\n"))
+    cells.append(
+        cell_code(
+            '''from html.parser import HTMLParser
+
+
+class NavSkip(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.skip_depth = 0
+        self.words: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs) -> None:
+        if tag.lower() == "nav":
+            self.skip_depth += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() == "nav" and self.skip_depth:
+            self.skip_depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if self.skip_depth:
+            return
+        token = data.strip()
+        if token:
+            self.words.append(token)
+
+
+sample = "<nav>Skip me</nav><article>Keep me</article>"
+parser = NavSkip()
+parser.feed(sample)
+print(parser.words)'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — flatten doubled whitespace\n\nCollapse interiors before embeddings comparisons.\n"))
+    cells.append(
+        cell_code(
+            '''import re
+
+messy = "hello    rag\\nagent"
+print(re.sub(r"\\s+", " ", messy.strip()))'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — guard unknown tags\n\nLower-case comparisons defend against **`DIV`** variance.\n"))
+    cells.append(
+        cell_code(
+            '''print("DIV".lower() == "div")'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### Exercise — `visible_html_text`\n\nImplement **`visible_html_text(fragment: str) -> str`** using an **`HTMLParser`** subclass like **`VisibleParser`** (skip **`script`**, **`style`**, **`noscript`**). Concatenate surviving stripped text chunks with a single space (`\" \".join(parts)`), then strip.\n\nMust satisfy **`visible_html_text(\"<p>a</p><script>x()</script><p>b</p>\") == \"a b\"`**.\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''def visible_html_text(fragment: str) -> str:
+    raise NotImplementedError
+
+
+assert visible_html_text("<p>a</p><script>x()</script><p>b</p>") == "a b"
+print("OK")'''
+        )
+    )
+    cells.append(
+        solution_md(
+            "visible_html_text",
+            'from html.parser import HTMLParser\n\n\nclass VisibleParser(HTMLParser):\n    _blocked = frozenset({"script", "style", "noscript"})\n\n    def __init__(self) -> None:\n        super().__init__()\n        self.depth = 0\n        self.parts: list[str] = []\n\n    def handle_starttag(self, tag: str, attrs) -> None:\n        if tag.lower() in self._blocked:\n            self.depth += 1\n\n    def handle_endtag(self, tag: str) -> None:\n        if tag.lower() in self._blocked and self.depth:\n            self.depth -= 1\n\n    def handle_data(self, data: str) -> None:\n        if self.depth:\n            return\n        chunk = data.strip()\n        if chunk:\n            self.parts.append(chunk)\n\n\ndef visible_html_text(fragment: str) -> str:\n    parser = VisibleParser()\n    parser.feed(fragment)\n    return " ".join(parser.parts).strip()',
+        )
+    )
+
+    write_nb("22-html-parser-text.ipynb", cells)
+
+
 def main() -> None:
     nb01()
     nb02()
@@ -2786,7 +3424,11 @@ def main() -> None:
     nb16()
     nb17()
     nb18()
-    print("Done. Generated 18 notebooks in", OUT_DIR)
+    nb19()
+    nb20()
+    nb21()
+    nb22()
+    print("Done. Generated 22 notebooks in", OUT_DIR)
 
 
 if __name__ == "__main__":
