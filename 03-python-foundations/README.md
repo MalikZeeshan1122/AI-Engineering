@@ -7,7 +7,9 @@ Core and **advanced** Python for AI engineering—before leaning hard on framewo
 Open **`python-foundations-beginner-to-advanced.ipynb`** in Jupyter / VS Code / Cursor:
 
 - Markdown **Explanation** cells + runnable **Examples**
-- Parts 1–3: core Python → intermediate patterns → typing, dataclasses, decorators, generators, protocols, asyncio
+- Parts **1–3**: core Python → intermediate → typing, dataclasses, decorators, generators, protocols, asyncio
+- Part **4**: **Practice exercises** (`# YOUR CODE HERE`, assertions)
+- Part **5**: **Solutions** — open only after you try Part 4
 
 Run cells **top to bottom**. If the asyncio cell fails on `await`, use `asyncio.run(main())` instead (see the note cell below it).
 

@@ -33,5 +33,6 @@ build/
 *.pem
 secrets/
 _notebook_tmp/
+_notebook_tmp_ex/
 90-resources/**/*.pdf
 !90-resources/README.md
