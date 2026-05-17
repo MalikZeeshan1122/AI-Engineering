@@ -1,71 +1,87 @@
 # Python foundations
 
-Core and **advanced** Python for AI engineering—before leaning hard on frameworks.
+Core through **advanced** Python aimed at **AI engineering** (prompts, JSON ingestion, HTTP, typing). This directory is self-contained: notebooks, runnable scripts, algorithm drills, and reading guides live side by side.
 
-## Step-by-step curriculum notebooks (`exercises/`)
+---
 
-**22 notebooks** (**01 → 22**): core **01–10**, stdlib-focused **11–15**, labs **16–18** (**`numpy`**, **`pytest`**, **`asyncio` queues**), then **19–22** (**`httpx`**, **`/` / `*`** signatures, pins / **`venv`**, **`html.parser`**) — **MOOC-style layout** (objectives, TOC, demos, progressive drills, exercises, collapsible solutions). Start here for structured daily progress:
+## Map of everything here
 
-**[`exercises/README.md`](exercises/README.md)** — open [`exercises/01-syntax-values-and-io.ipynb`](exercises/01-syntax-values-and-io.ipynb) first.
+Use this table to see **what each part is for** and **where to start**.
 
-**[`leetcode_practice/README.md`](leetcode_practice/README.md)** — LeetCode-style **easy → hard** functions (`unittest`: stubs under `problems/`, answers under `solutions/`).
+| Location | What it is | Best for | Start |
+|----------|------------|----------|--------|
+| **[`exercises/`](exercises/README.md)** | **22 Jupyter notebooks** (01→22): guided lessons, demos, progressive drills A→C, exercises, collapsible solutions. Single source is regenerated from `build_curriculum_notebooks.py`. | Daily structured learning **beginner → advanced** | [`01-syntax-values-and-io.ipynb`](exercises/01-syntax-values-and-io.ipynb) |
+| **[`leetcode_practice/`](leetcode_practice/README.md)** | **Interview-style problems**: stubs in `problems/`, answers in `solutions/`, `unittest` in `tests/`. Stdlib only. | Algorithm **patterns**, repetition, testing habits | [`leetcode_practice/README.md`](leetcode_practice/README.md) |
+| **[`oop/`](oop/README.md)** | **3 notebooks** with daily-life analogies (blueprints, house rules, contracts/plugins). Separate generator `build_oop_notebooks.py`. | People who learn **OOP** better with stories | [`oop/01-oop-beginner-blueprints-and-objects.ipynb`](oop/01-oop-beginner-blueprints-and-objects.ipynb) |
+| **`python-foundations-beginner-to-advanced.ipynb`** | **One big spiral**: explanations + runnable examples + practice parts + solutions (Parts 1–5). | **Review / cram** when you already know Python bits | Open in Jupyter / VS Code |
+| **`CURRICULUM-A-Z.md`** | **Alphabet spine**: why each topic matters for LLMs/RAG/agents + ship-sized drills. | **Pick-by-topic** after the core path | Read any letter you need |
 
-Regenerate all notebooks after editing the generator (from `03-python-foundations/`):
+### Runnable script folders (stdlib demos)
+
+These folders hold **small `.py` files** you run from the terminal after reading the matching notebooks. They are **not** a second curriculum—they cement notebook ideas in plain scripts.
+
+| Folder | Topic | Pair with notebooks |
+|--------|--------|---------------------|
+| **[`async/`](async/README.md)** | `asyncio`: `gather`, queues, `to_thread`, async iteration | **09**, **18** |
+| **[`decorators/`](decorators/README.md)** | `@timed`, retry/backoff decorators | **07** |
+| **[`generators/`](generators/README.md)** | Batching iterators, overlapping windows (chunk-shaped) | **07**, **05** |
+| **[`typing/`](typing/README.md)** | `Protocol`, frozen `dataclass` configs | **08** |
+| **[`logging/`](logging/README.md)** | `LoggerAdapter`, correlation-style fields | **12** |
+| **[`text_processing/`](text_processing/README.md)** | Fenced JSON extraction before `json.loads` | **13** |
+
+From **`03-python-foundations`**:
 
 ```bash
+cd 03-python-foundations
+python async/async_gather_demo.py
+python decorators/timed_call.py
+python generators/read_chunks.py
+python typing/embedder_protocol.py
+python logging/correlation_log_demo.py
+python text_processing/extract_json_fence.py
+```
+
+Each folder has its own **`README.md`** with file-by-file notes.
+
+---
+
+## Suggested learning order
+
+1. **`exercises/`** notebooks **01 → 22** in order (see [`exercises/README.md`](exercises/README.md)).
+2. **`leetcode_practice/`** in parallel once **03–07** feel comfortable (loops, functions, collections).
+3. **`oop/`** anytime after **`exercises/05`**—or whenever OOP clicks better with analogies.
+4. **`python-foundations-beginner-to-advanced.ipynb`** for consolidation or interview refresh.
+5. **`CURRICULUM-A-Z.md`** when you need a topic letter (async, bytes, queues, …).
+6. **Script folders** (`async/`, `decorators/`, …) right **after** the linked notebook numbers above.
+
+Track habits in **`01-daily-log/`** at the **repository root** if you keep a learning diary.
+
+---
+
+## Regenerate notebooks
+
+**Curriculum (`exercises/`):**
+
+```bash
+cd 03-python-foundations
 python exercises/build_curriculum_notebooks.py
 ```
 
-## Object-oriented Python track (`oop/`)
-
-Three notebooks (**beginner → advanced**) built around **daily-life analogies** (recipes, piggy banks, gym tiers, checkout lanes, charging kiosks):
-
-**[`oop/README.md`](oop/README.md)**
-
-Regenerate after editing:
+**OOP track (`oop/`):**
 
 ```bash
+cd 03-python-foundations
 python oop/build_oop_notebooks.py
 ```
 
-## Single-volume spiral notebook
+---
 
-Open **`python-foundations-beginner-to-advanced.ipynb`** in Jupyter / VS Code / Cursor:
+## Spiral notebook quick notes
 
-- Markdown **Explanation** cells + runnable **Examples**
-- Parts **1–3**: core Python → intermediate → typing, dataclasses, decorators, generators, protocols, asyncio
-- Part **4**: **Practice exercises** (`raise NotImplementedError` stubs, assertions)
-- Part **5**: **Solutions** — open only after you try Part 4
+Open **`python-foundations-beginner-to-advanced.ipynb`** top to bottom:
 
-Run cells **top to bottom**. If the asyncio cell fails on `await`, use `asyncio.run(main())` instead (see the note cell below it).
+- Parts **1–3**: explanations + runnable examples (syntax → asyncio + typing-shaped topics).
+- Part **4**: practice stubs (`raise NotImplementedError`).
+- Part **5**: solutions—open **after** Part 4.
 
-## Day 3+ — advanced A→Z spine
-
-Open **[`CURRICULUM-A-Z.md`](CURRICULUM-A-Z.md)** for the full alphabet (why each topic matters for LLMs/RAG/agents + drills).
-
-Suggested layout:
-
-```
-03-python-foundations/
-├── exercises/           ← 01–22 curriculum notebooks (see exercises/README.md)
-├── leetcode_practice/   ← classic patterns + unittest harness (easy/medium/hard)
-├── oop/                 ← 01–03 OOP-only spiral + daily-life stories
-├── python-foundations-beginner-to-advanced.ipynb
-├── CURRICULUM-A-Z.md
-├── async/ · decorators/ · generators/ · typing/
-├── logging/ · text_processing/          ← runnable demos + README each
-└── README.md files inside exercises/ + oop/
-```
-
-Work pattern: follow **`exercises/`** notebooks first; grind patterns in **`leetcode_practice/`**; deepen OOP with **`oop/`**; use **`CURRICULUM-A-Z.md`** for extra drills; log in **`01-daily-log/`** at repo root when tracking progress.
-
-Runnable scripts (**stdlib**) live under the folders below — pair each with its notebook spine:
-
-| Folder | Try | Notebook spine |
-|--------|-----|----------------|
-| [`async/`](async/README.md) | `python async/async_gather_demo.py`, `async_queue_demo.py`, `async_to_thread_demo.py`, `async_generator_demo.py` | **09**, **18** |
-| [`decorators/`](decorators/README.md) | `python decorators/timed_call.py`, `retry_with_backoff.py` | **07** |
-| [`generators/`](generators/README.md) | `python generators/read_chunks.py`, `overlapping_windows.py` | **07**, **05** |
-| [`typing/`](typing/README.md) | `python typing/embedder_protocol.py`, `model_config_dataclass.py` | **08** |
-| [`logging/`](logging/README.md) | `python logging/correlation_log_demo.py` | **12** |
-| [`text_processing/`](text_processing/README.md) | `python text_processing/extract_json_fence.py` | **13** |
+If `await` fails in your runtime, use `asyncio.run(main())` as noted inside the notebook.

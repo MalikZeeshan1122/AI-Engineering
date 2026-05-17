@@ -1,8 +1,34 @@
 # Python foundations — step-by-step notebooks (`exercises/`)
 
-Progressive Jupyter notebooks from **beginner → advanced**, tuned for **AI engineering** (prompts, JSON, retrieval-shaped exercises).
+This folder is the **main guided path**: **22 Jupyter notebooks** from beginner syntax through HTTP, HTML parsing, **NumPy**, **pytest**, and **asyncio** queues.
 
-**Inside each notebook:** after the main lesson cells you get **Progressive drills — easy → harder** — extra runnable examples that ramp difficulty *within* that topic (simple literals → richer patterns). Work through them before the capstone exercise when you want maximum coverage.
+---
+
+## What this folder contains
+
+| Kind | Role |
+|------|------|
+| **`01-*.ipynb` … `22-*.ipynb`** | Student-facing notebooks (metadata, objectives, TOC, concepts, runnable demos). |
+| **`build_curriculum_notebooks.py`** | **Generator**: editing this script and running it **rewrites all** numbered `.ipynb` files—keep changes here unless you intentionally edit a notebook by hand once. |
+
+Everything else in **`03-python-foundations`** supports these notebooks (practice scripts, LeetCode drills, OOP spiral).
+
+---
+
+## Inside each notebook
+
+1. Module metadata table — track, difficulty, workflow (**concept → demo → drills → exercise → solution**).
+2. Learning objectives.
+3. Table of contents aligned to numbered sections.
+4. Concept sections grounded in **AI-style workflows** (prompts, JSON, retrieval-shaped tasks).
+5. Runnable demos.
+6. **Progressive drills — easy → harder (A → B → C)** on the same topic.
+7. Formative exercises (`assert` checks where helpful).
+8. Solutions in collapsed HTML `<details>` blocks.
+
+That matches common **MOOC / bootcamp** rhythm: predictable structure, short assessments, explicit prerequisites.
+
+---
 
 ## Recommended path (run in order)
 
@@ -31,57 +57,42 @@ Progressive Jupyter notebooks from **beginner → advanced**, tuned for **AI eng
 | 21 | [`21-venv-and-dependency-pins.ipynb`](21-venv-and-dependency-pins.ipynb) | **`venv`** workflow, **`pip`** introspection, parsing **`requirements`** pins |
 | 22 | [`22-html-parser-text.ipynb`](22-html-parser-text.ipynb) | **`html.parser`**, strip **`script`/`style`**, visible text for RAG-ish cleanup |
 
-**Extended track (11 → 22)** maps to [`../CURRICULUM-A-Z.md`](../CURRICULUM-A-Z.md): **I**, **L**, **R**, **B**, **S**, **Z**, **N**, **U**, **Q**, plus **H** (HTTP), **K** (keyword-only / **`/`** shapes), **V** (pins / envs), **X** (HTML parsing).
-
-Then open the **single-volume spiral**: [`../python-foundations-beginner-to-advanced.ipynb`](../python-foundations-beginner-to-advanced.ipynb) and cross-check with [`../CURRICULUM-A-Z.md`](../CURRICULUM-A-Z.md).
-
-**OOP-only spiral** (daily-life analogies): [`../oop/README.md`](../oop/README.md).
+**Extended notebooks (11 → 22)** line up with topics in [`../CURRICULUM-A-Z.md`](../CURRICULUM-A-Z.md) (collections, logging, regex, bytes, subprocess/zip, NumPy, pytest, queues, HTTP, **`/`/`*`**, pins/**venv**, HTML).
 
 ---
 
-## Notebook format (aligned with common MOOC / bootcamp modules)
+## Sister folders under `03-python-foundations`
 
-Each notebook follows the same **instructional pattern**:
+| Folder | Why open it |
+|--------|-------------|
+| [`../leetcode_practice/`](../leetcode_practice/README.md) | Classic coding patterns + **`unittest`** (easy / medium / hard). |
+| [`../oop/`](../oop/README.md) | OOP-only spiral with everyday analogies. |
+| [`../async/`](../async/README.md), [`../decorators/`](../decorators/README.md), [`../generators/`](../generators/README.md), [`../typing/`](../typing/README.md), [`../logging/`](../logging/README.md), [`../text_processing/`](../text_processing/README.md) | Runnable **stdlib** scripts after specific notebooks—each README lists commands. |
 
-1. **Module metadata table** — track, difficulty, workflow type (concept → demo → exercise → solution).
-2. **Learning objectives** — short, observable outcomes.
-3. **Table of contents** — mapped to numbered sections inside the notebook.
-4. **Concept sections** — short explanation grounded in AI workflows (prompts, tools, ingestion).
-5. **Runnable demos** — minimal code that works end-to-end.
-6. **Progressive drills** — graded **A → B → C** examples (easy → harder) on the same topic.
-7. **Formative exercises** — small tasks with `assert`-based checks where helpful.
-8. **Solutions** — collapsed HTML `<details>` blocks so you can avoid spoilers until ready.
-
-This mirrors patterns used across platforms like **Coursera**, **edX**, and **DeepLearning.AI short courses**: predictable structure, bite-sized assessments, explicit prerequisites.
+Then cross-check the **single-volume** spiral [`../python-foundations-beginner-to-advanced.ipynb`](../python-foundations-beginner-to-advanced.ipynb).
 
 ---
 
 ## Regenerating notebooks
 
-If you edit [`build_curriculum_notebooks.py`](build_curriculum_notebooks.py), regenerate all `.ipynb` files:
+After editing **`build_curriculum_notebooks.py`**:
 
 ```bash
 cd exercises
 python build_curriculum_notebooks.py
 ```
 
-Requires Python **3.10+** for notebook cell snippets using modern typing syntax (`|` unions, `list[str]`). Install extras when noted: **`numpy`**, **`pytest`** (16–17), **`httpx`** (19).
+Requires Python **3.10+** (`|` unions, `list[str]` in snippets). Extra installs where noted: **`numpy`** (16), **`pytest`** (17), **`httpx`** (19).
 
 ---
 
 ## LeetCode-style drills (`leetcode_practice/`)
 
-Pattern library + **`unittest`** harness — **[`leetcode_practice/README.md`](../leetcode_practice/README.md)** (easy / medium / hard stubs, reference solutions, student vs reference tests).
+See **[`../leetcode_practice/README.md`](../leetcode_practice/README.md)** — stubs vs solutions vs **`unittest`**.
 
-Run reference checks after editing solutions:
+Sanity-check reference solutions from **`03-python-foundations`**:
 
 ```bash
 cd 03-python-foundations
 python -m unittest discover -s leetcode_practice/tests -p "test_reference*.py" -v
 ```
-
----
-
-## Related folders
-
-Algorithmic repetition lives in **`../leetcode_practice/`**. Runnable topic demos live under **`../async/`**, **`../decorators/`**, **`../generators/`**, **`../typing/`**, **`../logging/`**, **`../text_processing/`** (each folder has a **`README.md`**).
