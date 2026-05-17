@@ -2,6 +2,15 @@
 
 Core and **advanced** Python for AI engineering—before leaning hard on frameworks.
 
+## Learn interactively — beginner → advanced notebook
+
+Open **`python-foundations-beginner-to-advanced.ipynb`** in Jupyter / VS Code / Cursor:
+
+- Markdown **Explanation** cells + runnable **Examples**
+- Parts 1–3: core Python → intermediate patterns → typing, dataclasses, decorators, generators, protocols, asyncio
+
+Run cells **top to bottom**. If the asyncio cell fails on `await`, use `asyncio.run(main())` instead (see the note cell below it).
+
 ## Day 3 — advanced A→Z spine
 
 Open **[`CURRICULUM-A-Z.md`](CURRICULUM-A-Z.md)** for the full alphabet (why each topic matters for LLMs/RAG/agents + drills).
@@ -10,7 +19,8 @@ Suggested layout:
 
 ```
 03-python-foundations/
-├── CURRICULUM-A-Z.md   ← start here for Day 3+
+├── python-foundations-beginner-to-advanced.ipynb   ← guided path + examples
+├── CURRICULUM-A-Z.md   ← drill checklist / deeper map
 ├── oop/
 ├── async/
 ├── decorators/
