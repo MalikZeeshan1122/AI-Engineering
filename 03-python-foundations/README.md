@@ -54,7 +54,7 @@ Each folder has its own **`README.md`** with file-by-file notes.
 5. **`CURRICULUM-A-Z.md`** when you need a topic letter (async, bytes, queues, …).
 6. **Script folders** (`async/`, `decorators/`, …) right **after** the linked notebook numbers above.
 
-Track habits in **`01-daily-log/`** at the **repository root** if you keep a learning diary.
+Track habits in **[`01-daily-log/README.md`](../01-daily-log/README.md)** at the repository root if you keep a learning diary.
 
 ---
 

@@ -2,7 +2,9 @@
 
 Use this as **Day 3+ spine**: skim A→Z once, then drill topics **based on what your next project needs** (FastAPI, agents, RAG). Everything here ties to shipping reliable ML/LLM systems.
 
-**Practice loop:** read one letter → write 20–40 lines in `exercises/` or `experiments/` → add one bullet to `01-daily-log/`.
+**Practice loop:** pick a letter below → write **20–40 lines** in **[`exercises/`](exercises/README.md)** notebooks, **[`leetcode_practice/`](leetcode_practice/README.md)** stubs, or a runnable script under **`async/`**, **`decorators/`**, **`generators/`**, **`typing/`**, **`logging/`**, **`text_processing/`** (see the **[hub `README.md`](README.md)** for the full map) → add **one bullet** to **[`01-daily-log/`](../01-daily-log/README.md)**.
+
+**Quick links:** [Folder tour `README.md`](README.md) · [Notebooks `exercises/README.md`](exercises/README.md) · [Patterns `leetcode_practice/README.md`](leetcode_practice/README.md) · [Daily log `01-daily-log/README.md`](../01-daily-log/README.md)
 
 ---
 
@@ -286,6 +288,7 @@ Use this as **Day 3+ spine**: skim A→Z once, then drill topics **based on what
 4. **E + L + U** — failures, logs, tests  
 5. **D + J + R** — models & messy text boundaries  
 6. Rest as projects demand  
-7. **`leetcode_practice/`** — LeetCode-style pattern drills (`unittest`) alongside notebooks  
+7. **`leetcode_practice/`** — LeetCode-style pattern drills (`unittest`) alongside notebooks — [`leetcode_practice/README.md`](leetcode_practice/README.md)  
+8. **Hub README** — full map of **`03-python-foundations/`** folders + script demos — [`README.md`](README.md)  
 
 Return to **`START_HERE.md`** at repo root when moving to **`04-api-engineering/`**.

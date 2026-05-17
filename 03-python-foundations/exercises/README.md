@@ -68,6 +68,7 @@ That matches common **MOOC / bootcamp** rhythm: predictable structure, short ass
 | [`../leetcode_practice/`](../leetcode_practice/README.md) | Classic coding patterns + **`unittest`** (easy / medium / hard). |
 | [`../oop/`](../oop/README.md) | OOP-only spiral with everyday analogies. |
 | [`../async/`](../async/README.md), [`../decorators/`](../decorators/README.md), [`../generators/`](../generators/README.md), [`../typing/`](../typing/README.md), [`../logging/`](../logging/README.md), [`../text_processing/`](../text_processing/README.md) | Runnable **stdlib** scripts after specific notebooks—each README lists commands. |
+| [`../../01-daily-log/README.md`](../../01-daily-log/README.md) | One Markdown file per day — pairs with **[`CURRICULUM-A-Z.md`](../CURRICULUM-A-Z.md)** practice loop. |
 
 Then cross-check the **single-volume** spiral [`../python-foundations-beginner-to-advanced.ipynb`](../python-foundations-beginner-to-advanced.ipynb).
 
