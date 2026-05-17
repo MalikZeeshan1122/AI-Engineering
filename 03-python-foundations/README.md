@@ -52,10 +52,17 @@ Suggested layout:
 ├── oop/                 ← 01–03 OOP-only spiral + daily-life stories
 ├── python-foundations-beginner-to-advanced.ipynb
 ├── CURRICULUM-A-Z.md
-├── async/ · decorators/ · generators/ · typing/
+├── async/ · decorators/ · generators/ · typing/   ← runnable demos + README each
 └── README.md files inside exercises/ + oop/
 ```
 
 Work pattern: follow **`exercises/`** notebooks first; grind patterns in **`leetcode_practice/`**; deepen OOP with **`oop/`**; use **`CURRICULUM-A-Z.md`** for extra drills; log in **`01-daily-log/`** at repo root when tracking progress.
 
-Topic buckets **`async/`**, **`decorators/`**, **`generators/`**, **`typing/`** are placeholders for **your scripts** once notebooks feel cramped — pair each folder with matching **`exercises/`** notebooks (**07**, **09**, **08**, …).
+Topic buckets **`async/`**, **`decorators/`**, **`generators/`**, **`typing/`** each ship a **`README.md`** plus **small runnable `.py` demos** — run them after the matching **`exercises/`** notebooks (**07**, **09**, **08**).
+
+| Folder | Try | Notebook spine |
+|--------|-----|----------------|
+| [`async/`](async/README.md) | `python async/async_gather_demo.py` | **09**, **18** |
+| [`decorators/`](decorators/README.md) | `python decorators/timed_call.py` | **07** |
+| [`generators/`](generators/README.md) | `python generators/read_chunks.py` | **07**, **05** |
+| [`typing/`](typing/README.md) | `python typing/embedder_protocol.py` | **08** |

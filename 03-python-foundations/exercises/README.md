@@ -84,4 +84,4 @@ python -m unittest discover -s leetcode_practice/tests -p "test_reference*.py" -
 
 ## Related folders
 
-Topic buckets (`../oop/`, `../async/`, …) are for **your own scripts** as you outgrow notebooks; keep notebooks here as the guided path. Algorithmic repetition lives in **`../leetcode_practice/`**.
+Algorithmic repetition lives in **`../leetcode_practice/`**. Runnable topic demos live in **`../async/`**, **`../decorators/`**, **`../generators/`**, **`../typing/`** (see each **`README.md`**).
