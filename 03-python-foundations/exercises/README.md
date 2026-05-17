@@ -84,4 +84,4 @@ python -m unittest discover -s leetcode_practice/tests -p "test_reference*.py" -
 
 ## Related folders
 
-Algorithmic repetition lives in **`../leetcode_practice/`**. Runnable topic demos live in **`../async/`**, **`../decorators/`**, **`../generators/`**, **`../typing/`** (see each **`README.md`**).
+Algorithmic repetition lives in **`../leetcode_practice/`**. Runnable topic demos live under **`../async/`**, **`../decorators/`**, **`../generators/`**, **`../typing/`**, **`../logging/`**, **`../text_processing/`** (each folder has a **`README.md`**).

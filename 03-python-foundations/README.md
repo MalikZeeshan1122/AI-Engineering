@@ -52,17 +52,20 @@ Suggested layout:
 ├── oop/                 ← 01–03 OOP-only spiral + daily-life stories
 ├── python-foundations-beginner-to-advanced.ipynb
 ├── CURRICULUM-A-Z.md
-├── async/ · decorators/ · generators/ · typing/   ← runnable demos + README each
+├── async/ · decorators/ · generators/ · typing/
+├── logging/ · text_processing/          ← runnable demos + README each
 └── README.md files inside exercises/ + oop/
 ```
 
 Work pattern: follow **`exercises/`** notebooks first; grind patterns in **`leetcode_practice/`**; deepen OOP with **`oop/`**; use **`CURRICULUM-A-Z.md`** for extra drills; log in **`01-daily-log/`** at repo root when tracking progress.
 
-Topic buckets **`async/`**, **`decorators/`**, **`generators/`**, **`typing/`** each ship a **`README.md`** plus **small runnable `.py` demos** — run them after the matching **`exercises/`** notebooks (**07**, **09**, **08**).
+Runnable scripts (**stdlib**) live under the folders below — pair each with its notebook spine:
 
 | Folder | Try | Notebook spine |
 |--------|-----|----------------|
-| [`async/`](async/README.md) | `python async/async_gather_demo.py` | **09**, **18** |
-| [`decorators/`](decorators/README.md) | `python decorators/timed_call.py` | **07** |
-| [`generators/`](generators/README.md) | `python generators/read_chunks.py` | **07**, **05** |
-| [`typing/`](typing/README.md) | `python typing/embedder_protocol.py` | **08** |
+| [`async/`](async/README.md) | `python async/async_gather_demo.py`, `async_queue_demo.py`, `async_to_thread_demo.py`, `async_generator_demo.py` | **09**, **18** |
+| [`decorators/`](decorators/README.md) | `python decorators/timed_call.py`, `retry_with_backoff.py` | **07** |
+| [`generators/`](generators/README.md) | `python generators/read_chunks.py`, `overlapping_windows.py` | **07**, **05** |
+| [`typing/`](typing/README.md) | `python typing/embedder_protocol.py`, `model_config_dataclass.py` | **08** |
+| [`logging/`](logging/README.md) | `python logging/correlation_log_demo.py` | **12** |
+| [`text_processing/`](text_processing/README.md) | `python text_processing/extract_json_fence.py` | **13** |
