@@ -19,6 +19,8 @@ Progressive Jupyter notebooks from **beginner → advanced**, tuned for **AI eng
 
 Then open the **single-volume spiral**: [`../python-foundations-beginner-to-advanced.ipynb`](../python-foundations-beginner-to-advanced.ipynb) and cross-check with [`../CURRICULUM-A-Z.md`](../CURRICULUM-A-Z.md).
 
+**OOP-only spiral** (daily-life analogies): [`../oop/README.md`](../oop/README.md).
+
 ---
 
 ## Notebook format (aligned with common MOOC / bootcamp modules)
