@@ -2,6 +2,8 @@
 
 Progressive Jupyter notebooks from **beginner → advanced**, tuned for **AI engineering** (prompts, JSON, retrieval-shaped exercises).
 
+**Inside each notebook:** after the main lesson cells you get **Progressive drills — easy → harder** — extra runnable examples that ramp difficulty *within* that topic (simple literals → richer patterns). Work through them before the capstone exercise when you want maximum coverage.
+
 ## Recommended path (run in order)
 
 | # | Notebook | Focus |
@@ -32,8 +34,9 @@ Each notebook follows the same **instructional pattern**:
 3. **Table of contents** — mapped to numbered sections inside the notebook.
 4. **Concept sections** — short explanation grounded in AI workflows (prompts, tools, ingestion).
 5. **Runnable demos** — minimal code that works end-to-end.
-6. **Formative exercises** — small tasks with `assert`-based checks where helpful.
-7. **Solutions** — collapsed HTML `<details>` blocks so you can avoid spoilers until ready.
+6. **Progressive drills** — graded **A → B → C** examples (easy → harder) on the same topic.
+7. **Formative exercises** — small tasks with `assert`-based checks where helpful.
+8. **Solutions** — collapsed HTML `<details>` blocks so you can avoid spoilers until ready.
 
 This mirrors patterns used across platforms like **Coursera**, **edX**, and **DeepLearning.AI short courses**: predictable structure, bite-sized assessments, explicit prerequisites.
 

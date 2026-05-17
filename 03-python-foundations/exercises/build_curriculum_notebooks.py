@@ -99,6 +99,11 @@ def solution_md(title: str, code: str) -> dict[str, Any]:
     )
 
 
+def drill_header(blurb: str) -> dict[str, Any]:
+    """Section divider before graded micro-examples."""
+    return cell_md(f"---\n\n## Progressive drills — **easy → harder**\n\n{blurb}\n")
+
+
 def write_nb(name: str, cells: list[dict[str, Any]]) -> None:
     path = OUT_DIR / name
     nb = dict(NB_BASE)
@@ -121,7 +126,13 @@ def nb01() -> None:
                 "Format strings with **f-strings** for LLM prompts.",
                 "Normalize booleans and comparisons for flags.",
             ],
-            ["Expressions & variables", "Strings & f-strings", "Booleans & guards"],
+            [
+                "Expressions & variables",
+                "Strings & f-strings",
+                "Booleans & guards",
+                "Progressive drills — literals → format specs → conditional SYSTEM blocks",
+                "Exercise — mini prompt builder",
+            ],
         )
     )
     cells.append(section_header("1 · Expressions & variables", "*Explanation:* Python binds **names** to **objects**. AI code passes integers for batch sizes, floats for temperatures, strings for prompts."))
@@ -165,6 +176,61 @@ print("route?", should_route_to_human(enabled, score))'''
         )
     )
 
+    cells.append(
+        drill_header(
+            "These drills mirror **prompt assembly**: glue strings, control numeric display, toggle instructions without spaghetti."
+        )
+    )
+    cells.append(
+        cell_md(
+            """### A · Easiest — stitch role strings
+
+Concatenate simple pieces — same idea as joining `system` + delimiter + `user`."""
+        )
+    )
+    cells.append(
+        cell_code(
+            '''system = "You cite sources."
+user_turn = "Summarize this incident."
+delimiter = "\\n---\\n"
+print(system + delimiter + user_turn)'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """### B · Medium — control numeric display (`:.2f`, widths)
+
+API docs often pin temperatures/top-k — formatting avoids `"0.256789"` noise in logs."""
+        )
+    )
+    cells.append(
+        cell_code(
+            '''temperature = 0.256789
+top_k = 5
+print(f"sampling temp={temperature:.2f}, top_k={top_k:>3}")'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            """### C · Harder — conditional SYSTEM blocks
+
+Turn flags into bullet lists — mirrors production prompts where **debug/reasoning** sections toggle per environment."""
+        )
+    )
+    cells.append(
+        cell_code(
+            '''debug_trace = True
+rules = ["Answer concisely.", "Refuse harmful requests."]
+if debug_trace:
+    rules.append("Show intermediate checklist internally before answering.")
+
+system_prompt = "SYSTEM RULES:\\n- " + "\\n- ".join(rules)
+print(system_prompt)'''
+        )
+    )
+
     cells.append(cell_md("### Exercise — mini prompt builder\n\nImplement `build_classifier_prompt(labels)` returning one string:\n\n- Line 1 exactly: `CLASSIFIER: multi-label`\n- Line 2: `LABELS: ` + comma-separated **sorted** labels\n\nThen `assert \"LABELS: a, b, c\" in build_classifier_prompt([\"c\", \"a\", \"b\"])`.\n"))
     cells.append(cell_code("# Your code here\ndef build_classifier_prompt(labels: list[str]) -> str:\n    raise NotImplementedError\n\n\nassert \"LABELS: a, b, c\" in build_classifier_prompt([\"c\", \"a\", \"b\"])\nprint(\"OK\")"))
 
@@ -187,7 +253,13 @@ def nb02() -> None:
                 "Use dict merges and safe access.",
                 "Write readable list comprehensions for text prep.",
             ],
-            ["Lists & messages", "Dicts & hyperparameters", "Comprehensions for cleaning"],
+            [
+                "Lists & messages",
+                "Dicts & hyperparameters",
+                "Comprehensions for cleaning",
+                "Progressive drills — tuples → nested tool JSON → filtered IDs",
+                "Exercise — dedupe doc IDs",
+            ],
         )
     )
 
@@ -208,6 +280,40 @@ print(messages[-1])'''
 
     cells.append(section_header("3 · Comprehensions", "*Explanation:* Compact loops for normalization — prefer readable over clever."))
     cells.append(cell_code('messy = [" Rag ", "", "chunk\\n", "docs "]\nclean = [s.strip().lower() for s in messy if s.strip()]\nprint(clean)'))
+
+    cells.append(
+        drill_header(
+            "Collections power **retrieval pipelines**: pairing roles, drilling into nested tool payloads, filtering IDs cheaply."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — unpack `(role, text)` tuples\n\nSDKs sometimes hand you pairs—unpack instead of indexing `[0]`/`[1]`.\n"))
+    cells.append(cell_code('pair = ("system", "Be factual.")\nrole, directive = pair\nprint(role, directive[:2])'))
+
+    cells.append(
+        cell_md(
+            "### B · Medium — safe drill into nested tool JSON\n\n`.get` avoids `KeyError` when model JSON is noisy.\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''payload = {"tool": {"name": "search", "args": {"q": "hybrid retrieval"}}}
+query = payload.get("tool", {}).get("args", {}).get("q", "")
+print("query:", query)'''
+        )
+    )
+
+    cells.append(
+        cell_md(
+            "### C · Harder — comprehension filters chunk IDs\n\nKeep only IDs matching a prefix—cheap gate before hitting the vector DB.\n"
+        )
+    )
+    cells.append(
+        cell_code(
+            '''ids = ["chunk_finance_01", "sidebar_ad", "chunk_finance_02"]
+finance_chunks = [cid for cid in ids if cid.startswith("chunk_finance_")]
+print(finance_chunks)'''
+        )
+    )
 
     cells.append(cell_md("### Exercise — dedupe doc IDs\n\nGiven `doc_ids: list[str]`, return a **sorted list** of **unique** IDs using `set`, without mutating the original list.\n"))
     cells.append(
@@ -239,7 +345,13 @@ def nb03() -> None:
                 "Design function signatures with defaults & `**kwargs`.",
                 "Understand mutability pitfalls with default arguments.",
             ],
-            ["Conditionals & loops", "Function arguments", "Avoid mutable defaults"],
+            [
+                "Conditionals & loops",
+                "Function arguments",
+                "Avoid mutable defaults",
+                "Progressive drills — routing → zip pairing → variadic prompts",
+                "Exercise — clip list",
+            ],
         )
     )
 
@@ -269,6 +381,51 @@ def append_doc_good(acc: list | None = None, item: str = \"x\") -> list:
     acc = [] if acc is None else acc
     acc.append(item)
     return acc'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "Control flow + functions orchestrate **routing logic**, **parallel structures**, and **prompt sandwiches**."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — confidence routing (`if / elif`)\n\nSend low-confidence generations to humans.\n"))
+    cells.append(
+        cell_code(
+            '''def route_customer_ticket(confidence: float, urgent: bool) -> str:
+    if urgent:
+        return "page-oncall"
+    if confidence >= 0.85:
+        return "auto-resolve"
+    elif confidence >= 0.55:
+        return "human-review"
+    return "escalate-security"
+
+
+print(route_customer_ticket(0.9, False))
+print(route_customer_ticket(0.4, True))'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — `zip` chunks + scores together\n\nParallel lists appear constantly when pairing retrieval hits with logits.\n"))
+    cells.append(
+        cell_code(
+            '''chunks = ["chunk-a", "chunk-b"]
+scores = [0.91, 0.42]
+for text, score in zip(chunks, scores):
+    print(text, "score=", round(score, 3))'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — variadic turns (`*parts`)\n\nBuild prompts without manually stitching uncertain arity lists.\n"))
+    cells.append(
+        cell_code(
+            '''def sandwich(system: str, *user_turns: str, sep: str = "\\n---\\n") -> str:
+    body = sep.join(user_turns)
+    return sep.join([system, body])
+
+
+print(sandwich("SYSTEM: cite sources.", "USER: summarize invoice", "USER: focus on totals"))'''
         )
     )
 
@@ -307,7 +464,13 @@ def nb04() -> None:
                 "Parse and emit JSON safely.",
                 "Use `pathlib.Path` for portable IO — RAG ingestion starts here.",
             ],
-            ["Imports & __main__", "JSON payloads", "Path & text files"],
+            [
+                "Imports & __main__",
+                "JSON payloads",
+                "Path & text files",
+                "Progressive drills — JSON types → extensions → pretty dumps",
+                "Exercise — JSONL count",
+            ],
         )
     )
 
@@ -324,6 +487,45 @@ def nb04() -> None:
 p.write_text("hello\\nworld", encoding="utf-8")
 print(p.read_text(encoding="utf-8").splitlines())
 p.unlink(missing_ok=True)'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "Files + JSON underpin **every ingestion pipeline**. Ramp from typed parsing → filesystem hygiene → readable logs."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — detect JSON container types\n\nTool outputs might be arrays **or** objects—branch safely.\n"))
+    cells.append(
+        cell_code(
+            '''import json
+
+samples = ["[]", '{"hits":["a"]}', '"plain"']
+for raw in samples:
+    obj = json.loads(raw)
+    kind = "array" if isinstance(obj, list) else "object" if isinstance(obj, dict) else "scalar"
+    print(raw, "->", kind)'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — filter ingestion candidates by suffix\n\nSkip `.png`, ingest `.jsonl` only.\n"))
+    cells.append(
+        cell_code(
+            '''from pathlib import Path
+
+paths = [Path("notes.txt"), Path("dataset.jsonl"), Path("manifest.JSON")]
+targets = [p for p in paths if p.suffix.lower() == ".jsonl"]
+print([p.name for p in targets])'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — stable JSON logs (`sort_keys`, `indent`)\n\nDiff-friendly dumps help observability.\n"))
+    cells.append(
+        cell_code(
+            '''import json
+
+payload = {"model": "mini", "params": {"temperature": 0.2, "top_k": 8}}
+print(json.dumps(payload, sort_keys=True, indent=2))'''
         )
     )
 
@@ -369,7 +571,12 @@ def nb05() -> None:
                 "Know when `@staticmethod` / `@classmethod` helps.",
                 "Prefer composition for small components (retriever, reranker).",
             ],
-            ["Minimal service class", "Composition", "`TextSplitter` exercise"],
+            [
+                "Minimal service class",
+                "Composition",
+                "Progressive drills — counters → static helpers → reranked pipeline",
+                "Exercise — `TextSplitter`",
+            ],
         )
     )
 
@@ -405,6 +612,66 @@ class Pipeline:
         return " | ".join(self.r.search(q))
 
 print(Pipeline(Retriever(["RAG basics", "Vector DB"])).answer("rag"))'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "Classes bundle **telemetry**, **pure helpers**, and **pluggable stages** exactly like modular AI microservices."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — rolling keyword counts (`Bag`-lite)\n\nTrack token frequencies before throwing tensors at anything.\n"))
+    cells.append(
+        cell_code(
+            '''class KeywordCounter:
+    def __init__(self) -> None:
+        self.freq: dict[str, int] = {}
+
+    def observe(self, token: str) -> None:
+        self.freq[token] = self.freq.get(token, 0) + 1
+
+
+counter = KeywordCounter()
+for tok in ["embedding", "chunk", "embedding"]:
+    counter.observe(tok)
+print(counter.freq)'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — `@staticmethod` pure normalizers\n\nKeep unicode cleanup deterministic without constructing helper objects.\n"))
+    cells.append(
+        cell_code(
+            '''class TextCleanup:
+    @staticmethod
+    def slug(label: str) -> str:
+        return "-".join(label.lower().split())
+
+
+print(TextCleanup.slug("Hybrid Vector Store"))'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — inject a reranker strategy\n\nComposition grows when retrieval feeds ranking modules.\n"))
+    cells.append(
+        cell_code(
+            '''class ReverseRanker:
+    def reorder(self, hits: list[str]) -> list[str]:
+        return list(reversed(hits))
+
+
+class ServedPipeline:
+    def __init__(self, retriever: Retriever, ranker: ReverseRanker | None = None) -> None:
+        self.retriever = retriever
+        self.ranker = ranker or ReverseRanker()
+
+    def answer(self, q: str) -> str:
+        hits = self.retriever.search(q, k=5)
+        hits = self.ranker.reorder(hits)
+        return " | ".join(hits)
+
+
+docs = Retriever(["alpha rag doc", "beta sql doc", "gamma rag advanced"])
+print(ServedPipeline(docs).answer("rag"))'''
         )
     )
 
@@ -447,7 +714,13 @@ def nb06() -> None:
                 "Preserve tracebacks with `raise ... from`.",
                 "Author reusable setup/teardown with context managers.",
             ],
-            ["Try / except patterns", "Chaining exceptions", "`contextmanager` timer"],
+            [
+                "Try / except patterns",
+                "Chaining exceptions",
+                "`contextmanager` timer",
+                "Progressive drills — coercion → chained causes → class CM",
+                "Exercise — `nullsafe_get`",
+            ],
         )
     )
 
@@ -484,6 +757,72 @@ with span("retrieval"):
         )
     )
 
+    cells.append(
+        drill_header(
+            "Failures are control flow in AI stacks—practice **narrow catches**, **cause chains**, and **scoped teardown**."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — coerce tool ints safely\n\nLLMs emit `\"24\"` strings—convert defensively.\n"))
+    cells.append(
+        cell_code(
+            '''def coerce_positive_int(raw: str) -> int:
+    try:
+        value = int(raw)
+    except ValueError as exc:
+        raise ValueError(f"not an int: {raw!r}") from exc
+    if value <= 0:
+        raise ValueError("must be positive")
+    return value
+
+
+print(coerce_positive_int("128"))
+try:
+    coerce_positive_int("twelve")
+except ValueError as err:
+    print("blocked:", err)'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — translate KeyErrors into domain errors\n\nNested dict navigation mirrors messy JSON tool payloads.\n"))
+    cells.append(
+        cell_code(
+            '''def extract_tool_name(payload: dict) -> str:
+    try:
+        return payload["tool"]["name"]
+    except KeyError as exc:
+        raise ValueError("payload missing tool.name path") from exc
+
+
+sample = {"tool": {"name": "calculator", "args": {}}}
+print(extract_tool_name(sample))
+try:
+    extract_tool_name({"tool": {}})
+except ValueError as err:
+    print("blocked:", err.__cause__)'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — class-based context manager\n\nBeyond `@contextmanager`, explicit `__enter__`/`__exit__` maps to SDK sessions.\n"))
+    cells.append(
+        cell_code(
+            '''class TraceSpan:
+    def __init__(self, label: str) -> None:
+        self.label = label
+
+    def __enter__(self) -> "TraceSpan":
+        print("OPEN", self.label)
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> bool:
+        print("CLOSE", self.label)
+        return False  # propagate exceptions
+
+
+with TraceSpan("embed-batch"):
+    print("doing work...")'''
+        )
+    )
+
     cells.append(cell_md("### Exercise — `nullsafe_get`\n\nFunction `nullsafe_get(d, key)` returns `d[key]` if `key` exists **and** value is not `None`; otherwise returns `\"\"`. Raises **nothing**.\n"))
     cells.append(
         cell_code(
@@ -516,7 +855,13 @@ def nb07() -> None:
                 "Write memory-efficient iterators with `yield`.",
                 "Compose timing/logging cross-cutting concerns.",
             ],
-            ["Decorator anatomy", "Parameterized decorators", "Generators for chunks"],
+            [
+                "Decorator anatomy",
+                "Parameterized decorators",
+                "Generators for chunks",
+                "Progressive drills — partial factories → yield delegation → logging decorators",
+                "Exercise — repeat decorator",
+            ],
         )
     )
 
@@ -555,6 +900,71 @@ def char_windows(text: str, n: int, step: int) -> Iterator[str]:
         i += step
 
 print(list(char_windows("abcdefghij", 4, 3)))'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "Decorators + generators instrument **latency**, reuse **embedding math**, and stitch **streaming iterators**."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — `functools.partial` for biased transforms\n\nFreeze hyper-parameters once—reuse everywhere.\n"))
+    cells.append(
+        cell_code(
+            '''from functools import partial
+
+
+def scale_vector(values: list[float], factor: float) -> list[float]:
+    return [v * factor for v in values]
+
+
+double = partial(scale_vector, factor=2.0)
+print(double([0.1, 0.25]))'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — `yield from` stitches iterators\n\nConcatenate chapter iterators without building mega-lists.\n"))
+    cells.append(
+        cell_code(
+            '''def intro_chunks():
+    yield from ["preface", "setup"]
+
+def body_chunks():
+    yield from ["experiment", "results"]
+
+def all_chunks():
+    yield from intro_chunks()
+    yield from body_chunks()
+
+
+print(list(all_chunks()))'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — parameterized decorator emits telemetry prefix\n\nSame pattern LangChain middleware uses under the hood.\n"))
+    cells.append(
+        cell_code(
+            '''import functools
+
+
+def log_calls(prefix: str):
+    def deco(fn):
+        @functools.wraps(fn)
+        def wrapper(*args, **kwargs):
+            print(f"{prefix} >> {fn.__name__}")
+            return fn(*args, **kwargs)
+
+        return wrapper
+
+    return deco
+
+
+@log_calls("LLM")
+def completion(tokens: int) -> str:
+    return f"{tokens}-tok-response"
+
+
+print(completion(512))'''
         )
     )
 
@@ -610,7 +1020,13 @@ def nb08() -> None:
                 "Model configuration with `@dataclass(frozen=True)`.",
                 "Define `Protocol` interfaces for swap-in components.",
             ],
-            ["Annotations & generics lite", "Dataclass configs", "`Protocol` interfaces"],
+            [
+                "Annotations & generics lite",
+                "Dataclass configs",
+                "`Protocol` interfaces",
+                "Progressive drills — TypedDict payloads → Literal states → Callable aliases",
+                "Exercise — typed `clamp`",
+            ],
         )
     )
 
@@ -646,6 +1062,67 @@ class MemoryVS:
 
 vs: VectorStore = MemoryVS(["vector search", "sql db"])
 print(isinstance(vs, VectorStore), vs.query("vector", 1))'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "Typing turns fuzzy JSON blobs into **contracts** engineers can grep—critical once agents multiply."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — `TypedDict` for tool payloads\n\nDocument keys editors understand.\n"))
+    cells.append(
+        cell_code(
+            '''from typing import TypedDict
+
+class ToolPayload(TypedDict):
+    tool: str
+    query: str
+
+
+def summarize_tool_call(payload: ToolPayload) -> str:
+    return f'{payload["tool"]} :: {payload["query"]}'
+
+
+sample: ToolPayload = {"tool": "search", "query": "policy updates"}
+print(summarize_tool_call(sample))'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — `Literal` for job states\n\nAnnotates allowed strings—IDE + pyright catch typos early.\n"))
+    cells.append(
+        cell_code(
+            '''from typing import Literal
+
+Status = Literal["queued", "running", "done"]
+
+
+def badge(state: Status) -> str:
+    icons = {"queued": "[Q]", "running": "[>>]", "done": "[OK]"}
+    return icons[state]
+
+
+print(badge("running"))'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — `Callable` type aliases\n\nSwap embedding backends without rewriting orchestration.\n"))
+    cells.append(
+        cell_code(
+            '''from collections.abc import Callable
+
+EmbedBatch = Callable[[list[str]], list[list[float]]]
+
+
+def batch_embed_stub(texts: list[str]) -> list[list[float]]:
+    return [[float(len(t)), 1.0] for t in texts]
+
+
+def run_job(embedder: EmbedBatch, corpus: list[str]) -> int:
+    return len(embedder(corpus))
+
+
+print(run_job(batch_embed_stub, ["rag", "agents"]))'''
         )
     )
 
@@ -685,7 +1162,13 @@ def nb09() -> None:
                 "Use `gather` for parallel fetches.",
                 "Know blocking vs async boundaries before FastAPI.",
             ],
-            ["Coroutines recap", "`gather` parallelism", "`asyncio.to_thread` offload"],
+            [
+                "Coroutines recap",
+                "`gather` parallelism",
+                "`asyncio.to_thread` offload",
+                "Progressive drills — seq vs parallel → timeouts → tolerant gather",
+                "Exercise — first successful coroutine",
+            ],
         )
     )
 
@@ -751,6 +1234,76 @@ print(await run_offload())'''
         )
     )
 
+    cells.append(
+        drill_header(
+            "Async separates **latency-bound** waits—practice measuring overlap, enforcing deadlines, and isolating flaky vendors."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — sequential vs overlapping sleeps\n\nWall-clock drops when I/O overlaps—this is why FastAPI loves `async`.\n"))
+    cells.append(
+        cell_code(
+            '''import asyncio
+import time
+
+
+async def sequential_sleeps() -> float:
+    t0 = time.perf_counter()
+    await asyncio.sleep(0.06)
+    await asyncio.sleep(0.06)
+    return time.perf_counter() - t0
+
+
+async def parallel_sleeps() -> float:
+    t0 = time.perf_counter()
+    await asyncio.gather(asyncio.sleep(0.06), asyncio.sleep(0.06))
+    return time.perf_counter() - t0
+
+
+async def bench_sleep() -> None:
+    print("sequential ~", round(await sequential_sleeps(), 3), "s")
+    print("parallel   ~", round(await parallel_sleeps(), 3), "s")
+
+
+await bench_sleep()'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — hard deadlines with `wait_for`\n\nStop runaway vendor calls politely.\n"))
+    cells.append(
+        cell_code(
+            '''import asyncio
+
+
+async def slow_vendor() -> str:
+    await asyncio.sleep(1.0)
+    return "never"
+
+
+try:
+    await asyncio.wait_for(slow_vendor(), timeout=0.07)
+except asyncio.TimeoutError:
+    print("cancelled slow vendor")'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — `gather(..., return_exceptions=True)`\n\nOne poisoned task shouldn't nuke an entire fan-out batch.\n"))
+    cells.append(
+        cell_code(
+            '''import asyncio
+
+
+async def flaky_shard() -> str:
+    raise ValueError("timeout from AZ-1")
+
+async def healthy_shard() -> str:
+    return "chunk-42"
+
+
+mixed = await asyncio.gather(flaky_shard(), healthy_shard(), return_exceptions=True)
+print(mixed)'''
+        )
+    )
+
     cells.append(cell_md("### Exercise — first successful\n\n`async def first_done(coro_a, coro_b)` schedules both coroutines and returns the **result** of whichever finishes first. Use `asyncio.create_task`, `asyncio.wait(..., return_when=asyncio.FIRST_COMPLETED)`, cancel the slower one, then `await` the winner.\n"))
     cells.append(
         cell_code(
@@ -791,7 +1344,13 @@ def nb10() -> None:
                 "Isolate filesystem tests with tmp paths.",
                 "Think about pytest adoption next.",
             ],
-            ["Assertions & param tables", "Tmp paths", "Debugging hooks"],
+            [
+                "Assertions & param tables",
+                "Tmp paths",
+                "Debugging hooks",
+                "Progressive drills — expected failures → float tolerances → canonical dict hashes",
+                "Exercise — test `truncate`",
+            ],
         )
     )
 
@@ -817,6 +1376,55 @@ import json
 for raw, expected in cases:
     assert json.loads(raw) == expected
 print("table OK")'''
+        )
+    )
+
+    cells.append(
+        drill_header(
+            "Testing mindset prevents regressions when prompts/tools change hourly—practice **negative paths**, **float fuzz**, **snapshot comparisons**."
+        )
+    )
+    cells.append(cell_md("### A · Easiest — expect failures (`pytest` preview)\n\nGuard rails should explode loudly when inputs violate contracts.\n"))
+    cells.append(
+        cell_code(
+            '''def budget_tokens(tokens: int) -> None:
+    if tokens <= 0:
+        raise ValueError("tokens must be positive")
+
+
+try:
+    budget_tokens(-5)
+except ValueError:
+    print("caught invalid budget")'''
+        )
+    )
+
+    cells.append(cell_md("### B · Medium — floating comparisons\n\nNever assert raw `==` on uninformed embeddings analog math.\n"))
+    cells.append(
+        cell_code(
+            '''def approx_eq(a: float, b: float, eps: float = 1e-9) -> bool:
+    return abs(a - b) <= eps
+
+
+assert approx_eq(0.1 + 0.2, 0.3)
+print("float guard ok")'''
+        )
+    )
+
+    cells.append(cell_md("### C · Harder — canonical JSON fingerprints\n\nStable dumps detect accidental dict reorder regressions.\n"))
+    cells.append(
+        cell_code(
+            '''import json
+
+
+def canonical_json(payload: dict) -> str:
+    return json.dumps(payload, sort_keys=True)
+
+
+left = {"model": "mini", "kwargs": {"top_k": 8}}
+right = {"kwargs": {"top_k": 8}, "model": "mini"}
+assert canonical_json(left) == canonical_json(right)
+print("snapshots match")'''
         )
     )
 
