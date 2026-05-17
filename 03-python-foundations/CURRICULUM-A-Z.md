@@ -286,5 +286,6 @@ Use this as **Day 3+ spine**: skim A→Z once, then drill topics **based on what
 4. **E + L + U** — failures, logs, tests  
 5. **D + J + R** — models & messy text boundaries  
 6. Rest as projects demand  
+7. **`leetcode_practice/`** — LeetCode-style pattern drills (`unittest`) alongside notebooks  
 
 Return to **`START_HERE.md`** at repo root when moving to **`04-api-engineering/`**.

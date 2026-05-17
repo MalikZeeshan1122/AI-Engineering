@@ -69,6 +69,19 @@ Requires Python **3.10+** for notebook cell snippets using modern typing syntax 
 
 ---
 
+## LeetCode-style drills (`leetcode_practice/`)
+
+Pattern library + **`unittest`** harness — **[`leetcode_practice/README.md`](../leetcode_practice/README.md)** (easy / medium / hard stubs, reference solutions, student vs reference tests).
+
+Run reference checks after editing solutions:
+
+```bash
+cd 03-python-foundations
+python -m unittest discover -s leetcode_practice/tests -p "test_reference*.py" -v
+```
+
+---
+
 ## Related folders
 
-Topic buckets (`../oop/`, `../async/`, …) are for **your own scripts** as you outgrow notebooks; keep notebooks here as the guided path.
+Topic buckets (`../oop/`, `../async/`, …) are for **your own scripts** as you outgrow notebooks; keep notebooks here as the guided path. Algorithmic repetition lives in **`../leetcode_practice/`**.

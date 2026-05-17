@@ -8,6 +8,8 @@ Core and **advanced** Python for AI engineering—before leaning hard on framewo
 
 **[`exercises/README.md`](exercises/README.md)** — open [`exercises/01-syntax-values-and-io.ipynb`](exercises/01-syntax-values-and-io.ipynb) first.
 
+**[`leetcode_practice/README.md`](leetcode_practice/README.md)** — LeetCode-style **easy → hard** functions (`unittest`: stubs under `problems/`, answers under `solutions/`).
+
 Regenerate all notebooks after editing the generator (from `03-python-foundations/`):
 
 ```bash
@@ -46,6 +48,7 @@ Suggested layout:
 ```
 03-python-foundations/
 ├── exercises/           ← 01–22 curriculum notebooks (see exercises/README.md)
+├── leetcode_practice/   ← classic patterns + unittest harness (easy/medium/hard)
 ├── oop/                 ← 01–03 OOP-only spiral + daily-life stories
 ├── python-foundations-beginner-to-advanced.ipynb
 ├── CURRICULUM-A-Z.md
@@ -53,4 +56,6 @@ Suggested layout:
 └── README.md files inside exercises/ + oop/
 ```
 
-Work pattern: follow **`exercises/`** notebooks first; deepen OOP with **`oop/`**; use **`CURRICULUM-A-Z.md`** for extra drills; log in **`01-daily-log/`**.
+Work pattern: follow **`exercises/`** notebooks first; grind patterns in **`leetcode_practice/`**; deepen OOP with **`oop/`**; use **`CURRICULUM-A-Z.md`** for extra drills; log in **`01-daily-log/`** at repo root when tracking progress.
+
+Topic buckets **`async/`**, **`decorators/`**, **`generators/`**, **`typing/`** are placeholders for **your scripts** once notebooks feel cramped — pair each folder with matching **`exercises/`** notebooks (**07**, **09**, **08**, …).
