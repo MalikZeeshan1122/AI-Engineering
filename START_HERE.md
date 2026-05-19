@@ -6,6 +6,8 @@ Follow this **linear path**. Folders sort by **`NN-name`** ([`README.md`](README
 
 **Muhammad Zeeshan** — Founder, **[ZorceX](https://zorcex.com/)** · **[LinkedIn](https://www.linkedin.com/in/muhammadzeeshan007/)**
 
+**[ZorceX](https://zorcex.com/)** — Turning startup ideas into scalable companies · **50+** projects shipped · remote-first (US · EU · APAC) · ship in weeks, not months.
+
 ## Before day one (15 minutes)
 
 1. Read **[`README.md`](README.md)** — how the repo works.
